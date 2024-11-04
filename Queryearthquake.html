@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>东北缘桥隧预警数据分析处理与产出系统</title>
+    <link rel="icon" href="dist/images/earth.png" type="image/png">
+    <link rel="stylesheet" href="./dist/css/style.css">
+
+    <link rel="stylesheet" href="./dist/css/font-awesome.5.15.4.all.min.css">
+
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+    <link rel="stylesheet" href="./dist/css/daterangepicker.css">
+    <link rel="stylesheet" href="./dist/css/metroStyle/metroStyle.css" type="text/css">
+    <link rel="stylesheet" href="./dist/css/sweetalert2.min.css">
+    <link rel="stylesheet" href="./dist/css/dataTables.bootstrap5.css">
+    <link rel="stylesheet" href="./dist/css/bootstrap-table@1.21.0.min.css">
+    <style>
+        .loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <div class="loadingOverlay" style="display:none"></div>
+    <div id="sidebarNav"  class="main-wrapper">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="sidebar-brand default" style="font-size:16px" id="goToIndex">
+                    <img src="./dist/images/fzjz.png" alt="" style="width:50px">
+                    ADPR
+                </a>
+            </div>
+            <div class="sidebar-body pointer overflow-auto">
+                <ul class="nav">
+                    <li class="nav-item pointer">
+                        <a onclick=jumptodashboard() class="nav-link">
+                            <i class="fa fa-home" style="color: white"></i>
+                            <i class="fa fa-pie-chart" aria-hidden="true" style="color: white"></i>
+                            <span class="link-title">项目信息</span>
+                        </a>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a class="nav-link" role="button">
+                            <i class="fa fa-tasks" style="color: white"></i>
+                            <span class="link-title">状态统计</span>
+                            <i class="link-arrow" data-feather="chevron-down"></i>
+                        </a>
+                        <div class="collapse show" id="StateCount">
+                            <ul class="nav sub-menu">
+                                                               <li class="nav-item">
+                                    <a onclick="jumptoProjectStatus()" class="nav-link">项目状态</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick=jumptoDeviceStatus() class="nav-link">设备状态</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptoCedianStatus()" class="nav-link">测点状态</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a class="nav-link" role="button">
+                            <i class="fa fa-tv" style="color: white"></i>
+                            <span class="link-title">实时监测</span>
+                            <i class="link-arrow" data-feather="chevron-down"></i>
+                        </a>
+                        <div class="collapse show" id="RealtimeData">
+                            <ul class="nav sub-menu">
+                                <li class="nav-item">
+                                    <a onclick="jumptotimeCurve()" class="nav-link">时程曲线</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptofftCurve()" class="nav-link">时频曲线</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptoweiyiraoduCurve()" class="nav-link">位移与挠度</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptotimeStationCurve()" class="nav-link">台站数据</a>
+                                </li>
+                                <!-- <li class="nav-item">
+                                    <a onclick="jumptotimefftCurve()" class="nav-link">时程和时频曲线</a>
+                                </li> -->
+                                <!-- <li class="nav-item">
+                                    <a onclick="jumptospeedCurve()" class="nav-link">速度和位移曲线</a>
+                                </li> -->
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a class="nav-link" role="button">
+                            <i class="fa fa-tv" style="color: white"></i>
+                            <span class="link-title">异常数据</span>
+                            <i class="link-arrow" data-feather="chevron-down"></i>
+                        </a>
+                        <div class="collapse show" id="RealtimeData">
+                            <ul class="nav sub-menu">
+                                <li class="nav-item">
+                                    <a onclick="jumptoAnomalyDataAnalysis()" class="nav-link">异常数据分析</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptoAnomalyDataProcessing()" class="nav-link">异常数据处理</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a onclick="jumptodataAnylsis()" class="nav-link">
+                            <i class="fa fa-align-right" style="color: white"></i>
+                            <span class="link-title">数据分析</span>
+                        </a>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a class="nav-link" role="button">
+                            <i class="fa fa-folder" style="color: white"></i>
+                            <span class="link-title">数据管理</span>
+                        </a>
+                        <div class="collapse show" id="DataManage">
+                            <ul class="nav sub-menu">
+                                <li class="nav-item">
+                                    <a onclick="jumptoDataView()" class="nav-link">历史数据查询</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptoDataExport()" class="nav-link">历史数据导出</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptoQueryearthquake()" class="nav-link active">地震事件查询</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a onclick="jumptoDataWarn()" class="nav-link">
+                            <i class="fa fa-bell" style="color: white"></i>
+                            <span class="link-title">报警管理</span>
+                        </a>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a class="nav-link" role="button">
+                            <i class="fa fa-folder" style="color: white"></i>
+                            <span class="link-title">有限元分析</span>
+                        </a>
+                        <div class="collapse show">
+                            <ul class="nav sub-menu">
+                                <!-- <li class="nav-item">
+                                    <a onclick="jumptoFiniteelementmodel()" class="nav-link">有限元分析模型</a>
+                                </li> -->
+                                <li class="nav-item">
+                                    <a onclick="jumptoFiniteelementmodelAnalysis()" class="nav-link">模态分析</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptoFiniteelementmodelSimulation()" class="nav-link">仿真模拟</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a onclick="jumpto3D()" class="nav-link">
+                            <i class="fa fa-tv" style="color: white"></i>
+                            <span class="link-title">三维模型</span>
+                        </a>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a class="nav-link" role="button">
+                            <i class="fa fa-folder" style="color: white"></i>
+                            <span class="link-title">档案管理</span>
+                        </a>
+                        <div class="collapse show" id="FileManage">
+                            <ul class="nav sub-menu">
+                                <li class="nav-item">
+                                    <a onclick="jumptoDay()" class="nav-link">每日报告</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptoMonth()" class="nav-link">每月报告</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptoYear()" class="nav-link">年度报告</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a onclick="jumptoVideoMonitoring()" class="nav-link">
+                            <i class="fa fa-tv" style="color: white"></i>
+                            <span class="link-title">视频监控</span>
+                        </a>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a onclick="jumptohelp()" class="nav-link">
+                            <i class="fa fa-tv" style="color: white"></i>
+                            <span class="link-title">帮助文档</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="page-wrapper">
+            <nav class="navbar">
+                <a href="#" class="sidebar-toggler">
+                    <i data-feather="menu"></i>
+                </a>
+                <div class="navbar-content">
+                    <form class="search-form default">
+                        <div class="input-group" style="font-size:23px;color:#fff;font-weight:700">
+                            <span id="platername"></span>
+                        </div>
+                    </form>
+                    <ul class="navbar-nav">
+                        <ul class="navbar-nav">
+                           <!-- <li class="nav-item default" style="float: left;">
+                                <object type="image/svg+xml" data="dist\images\地震预警.svg"></object>
+                                <a class="nav-link" onclick="gotoEarthquake()">地震预警</i></a>
+                            </li> -->
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <li class="nav-item default" style="float: left;">
+                                <object type="image/svg+xml" data="dist\images\烈度速报.svg"></object>
+                                <a class="nav-link" onclick="gotoIntensity()">烈度速报</i></a>
+                            </li>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <li class="nav-item default" style="float: left;">
+                                <object type="image/svg+xml" data="dist\images\项目配置.svg"></object>
+                                <a class="nav-link" onclick="gotoProjectConfig()">项目配置</i></a>
+                            </li>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <li class="nav-item pointer">
+                                <object type="image/svg+xml" data="dist\images\项目列表.svg"></object>
+                                <a class="nav-link" onclick="gotoProjectlist()">项目列表</a>
+                            </li>
+                            <!-- <li class="nav-item pointer">
+                            <a class="nav-link" onclick="gotoProjectlist()">转到主页</a>
+                        </li> -->
+                        </ul>
+                </div>
+            </nav>
+            <nav class="settings-sidebar" id="panel4">
+                <div class="sidebar-body" style="height:90%">
+                    <!-- <h6 class="text-muted">传感器:</h6> -->
+                    <p style="padding-bottom: 0.5rem;">时间范围选择：</p>
+                    <!-- <input type="text" name="date1" id="date1" class="form-control btn-outline-primary" style="width:180px;"> -->
+
+                    <input type="text" name="date1" id="date1" class="form-control btn-outline-primary"
+                        style="width:11.5rem;">
+                    <br>
+                    <p style="padding-bottom: 0.5rem;">纬度(单位：度)：</p>
+                    大于 <input type="text" id="weidu01" value="3.51" style="width:4rem">
+                    小于 <input type="text" id="weidu02" value="53.33" style="width:4rem">
+                    <br>
+                    <br>
+                    <p style="padding-bottom: 0.5rem;">经度(单位：度)：</p>
+                    大于 <input type="text" id="jingdu01" value="73.33" style="width:4rem">
+                    小于 <input type="text" id="jingdu02" value="135.05" style="width:4rem">
+                    <br>
+                    <br>
+                    <p style="padding-bottom: 0.5rem;">深度(单位：千米)：</p>
+                    大于 <input type="text" id="shendu01" value="1" style="width:4rem">
+                    小于 <input type="text" id="shendu02" value="100" style="width:4rem">
+                    <br>
+                    <br>
+                    <p style="padding-bottom: 0.5rem;">震级(单位：度)：</p>
+                    大于 <input type="text" id="zhenji01" value="1" style="width:4rem">
+                    小于 <input type="text" id="zhenji02" value="10" style="width:4rem">
+                    <br>
+                    <br>
+                    <button class="dropdown-item text-primary" style="position: fixed;bottom: 0;"
+                        onclick="closestation()">关闭</button>
+                    <button class="dropdown-item text-danger" style="position: fixed;bottom: 4%;"
+                        onclick="earthquake()">确认</button>
+                </div>
+            </nav>
+            <div class="page-content">
+                <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+                    <div>
+                        <h4 class="mb-3 mb-md-0">地震事件查询</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <button type="button" onclick="query()" class="btn btn-primary">查询</button>
+                                <div class="row">
+                                    <div id="searchearthquake">
+                                        <div class="row">
+                                            <div class="col-lg-12 stretch-card grid-margin">
+                                                <div class="card">
+                                                    <div class="card-body" style="padding:0 0">
+                                                        <div id="world-map"
+                                                            style="height: 600px; width: 100%;border: #7987a1;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal fade" id="disasterModal" tabindex="-1"
+                                                aria-labelledby="disasterModalLabel" aria-hidden="true"
+                                                style="z-index: index 999;">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="disasterModalLabel">地震信息</h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="btn-close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            发震时刻：
+                                                            <span id="diaster_time">
+                                                                2022-11-21 23:17:37
+                                                            </span>
+                                                            <br>
+                                                            纬度：
+                                                            <span id="diaster_lat">
+                                                                39.81°
+                                                            </span>
+                                                            <br>
+                                                            经度：
+                                                            <span id="diaster_long">
+                                                                117.42°
+                                                            </span>
+                                                            <br>
+                                                            深度：
+                                                            <span id="diaster_deep">
+                                                                17千米
+                                                            </span>
+                                                            <br>
+                                                            震级：
+                                                            <span id="diaster_grade">
+                                                                2.6
+                                                            </span>
+                                                            <br>
+                                                            参考位置：
+                                                            <span id="diaster_district">
+                                                                天津蓟州区
+                                                            </span>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">关闭</button>
+                                                            <button type="button" class="btn btn-primary"
+                                                                onclick="loaddata()">提交</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 grid-margin stretch-card">
+                                                    <div class="card" style="padding:0 0">
+                                                        <div class="card-body">
+                                                            <p class="text-muted mb-3"></p>
+                                                            <div class="table-responsive">
+                                                                <table id="earthquaketable" data-locale="zh-CN"
+                                                                    class="table table-bordered table-hover">
+                                                                </table>
+                                                            </div>
+                                                            <br>
+                                                            注：该数据来源于中国地震台网中心
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./dist/js/core.js"></script>
+    <script src="./dist/js/jquery.min.js"></script>
+    <script src="./dist/js/jquery.cookie.js"></script>
+    <script src="./dist/js/jquery.dataTables.js"></script>
+    <script src="./dist/js/dataTables.bootstrap5.js"></script>
+    <script src="./dist/js/bootstrap-table.min.js"></script>
+    <script src="./dist/js/bootstrap-table-zh-CN.min.js"></script>
+    <script src="./dist/js/moment.min.js"></script>
+    <script src="./dist/js/Queryearthquake.js"></script>
+    <script src="./dist/js/daterangepicker.js"></script>
+    <script src="./dist/js/wz.js"></script>
+    <script src="./dist/js/jump.js"></script>
+    <script src="./dist/js/echarts.min.js"></script>
+    <script src="http://api.map.baidu.com/api?v=2.0&ak=w9CffMpls7o003N3KSYbFQ22Lo08n53C&callback"></script>
+    <script src="./dist/js/wz.js"></script>
+</body>
+
+</html>

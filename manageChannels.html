@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>东北缘桥隧预警数据分析处理与产出系统</title>
+  <link rel="icon" href="dist/images/earth.png" type="image/png">
+  <link rel="stylesheet" href="./dist/css/style.css">
+
+  <link rel="stylesheet" href="./dist/css/font-awesome.5.15.4.all.min.css">
+
+
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+  <link rel="stylesheet" href="./dist/css/dataTables.bootstrap5.css">
+  <link rel="stylesheet" href="./dist/css/bootstrap-table@1.21.0.min.css">
+  <link rel="stylesheet" href="./dist/css/sweetalert2.min.css">
+</head>
+
+<body>
+  <!-- 设备管理 -->
+  <div class="main-wrapper">
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <a href="#" class="sidebar-brand default" style="font-size:16px" id="goToIndex">
+          <img src="./dist/images/fzjz.png" alt="" style="width:50px">
+          ADPR
+        </a>
+      </div>
+      <div class="sidebar-body pointer">
+        <ul class="nav">
+          <li class="nav-item pointer">
+            <a onclick="jumptoprojectconfig()" class="nav-link">
+              <i class="fa fa-pie-chart" aria-hidden="true" style="color: white"></i>
+              <span class="link-title">工程信息</span>
+            </a>
+          </li>
+          <li class="nav-item pointer">
+            <a onclick="jumptodevicemangment()" class="nav-link">
+              <i class="fa fa-pie-chart" aria-hidden="true" style="color: white"></i>
+              <span class="link-title">设备管理</span>
+            </a>
+          </li>
+          <!-- <li class="nav-item pointer">  
+                        <a onclick="jumptomeasurementpointmanagement()" class="nav-link">  
+                            <i class="fa fa-pie-chart" aria-hidden="true" style="color: white"></i>  
+                            <span class="link-title">测点管理</span>  
+                        </a>  
+                    </li>  
+                    <li class="nav-item pointer">  
+                        <a onclick="jumptorealtimeview()" class="nav-link">  
+                            <i class="fa fa-pie-chart" aria-hidden="true" style="color: white"></i>  
+                            <span class="link-title">实时视图</span>  
+                        </a>  
+                    </li>   -->
+          <li class="nav-item pointer">
+            <a onclick="jumptoalarmmanagement()" class="nav-link">
+              <i class="fa fa-pie-chart" aria-hidden="true" style="color: white"></i>
+              <span class="link-title">报警管理</span>
+            </a>
+          </li>
+          <li class="nav-item pointer">
+            <a onclick="jumptovideomonitoring()" class="nav-link">
+              <i class="fa fa-pie-chart" aria-hidden="true" style="color: white"></i>
+              <span class="link-title">视频监控</span>
+            </a>
+          </li>
+          <li class="nav-item pointer  active">
+            <a onclick="jumptomanageChannels()" class="nav-link">
+              <i class="fa fa-pie-chart" aria-hidden="true" style="color: white"></i>
+              <span class="link-title">通道管理</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="page-wrapper">
+      <nav class="navbar">
+        <a href="#" class="sidebar-toggler">
+          <i data-feather="menu"></i>
+        </a>
+        <div class="navbar-content">
+          <form class="search-form default">
+            <div class="input-group" style="font-size:23px;color:#fff;font-weight:700">
+              <span id="platername"></span>
+            </div>
+          </form>
+          <ul class="navbar-nav">
+            <li class="nav-item pointer">
+              <i><object type="image/svg+xml" data="dist\images\返回.svg"></object></i>
+              <a class="nav-link" onclick="gotoDashboard()">返回桥梁</a>
+            </li>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <li class="nav-item pointer">
+              <i><object type="image/svg+xml" data="dist\images\返回.svg"></object></i>
+              <a class="nav-link" onclick="gotoIndex()">返回项目列表</a>
+            </li>
+            <!-- <li class="nav-item pointer">
+              <a class="nav-link" onclick="gotoProjectlist()">转到主页</a>
+            </li> -->
+          </ul>
+        </div>
+      </nav>
+      <div class="page-content">
+        <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+          <div>
+            <h4 class="mb-3 mb-md-0">通道管理</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMonModal"
+                  data-bs-whatever="@getbootstrap">添加通道</button>
+                <p class="text-muted mb-3"></p>
+                <div class="table-responsive">
+                  <table id="MonitorTable" data-locale="zh-CN" class="table table-bordered table-hover"></table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="addMonModal" tabindex="-1" aria-labelledby="addMonModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="addMonModalLabel">添加通道</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                </div>
+                <div class="modal-body">
+                  <form>
+                    <div class="mb-3">
+                      <label for="channel_id" class="form-label">通道ID:</label>
+                      <input type="text" class="form-control" id="channel_id" name="channelId" required>
+                    </div>
+                    <!-- <div class="mb-3">
+                      <label for="channel_type" class="form-label">通道类型:</label>
+                      <select class="form-select" id="channel_type" name="channelType">
+                        <option value="channel_1">通道1</option>
+                        <option value="channel_2">通道2</option>
+                      </select>
+                    </div> -->
+                    <div class="mb-3">
+                      <label for="channel_name" class="form-label">通道名字:</label>
+                      <input type="text" class="form-control" id="channel_name" name="channel_name">
+                    </div>
+                    <div class="mb-3">
+                      <label for="sampling_rate" class="form-label">采样率:</label>
+                      <input type="text" class="form-control" id="sampling_rate" name="samplingRate">
+                    </div>
+                    <div class="mb-3">
+                      <label for="mac_address" class="form-label">MAC地址:</label>
+                      <input type="text" class="form-control" id="mac_address" name="macAddress">
+                    </div>
+                    <div class="mb-3">
+                      <label for="channel" class="form-label">通道:</label>
+                      <input type="text" class="form-control" id="channel" name="channel">
+                    </div>
+                    <div class="mb-3">
+                      <label for="unit" class="form-label">单位:</label>
+                      <input type="text" class="form-control" id="unit" name="unit">
+                    </div>
+                    <div class="mb-3">
+                      <label for="status" class="form-label">方向:</label>
+                      <input type="text" class="form-control" id="status" name="Dir">
+                    </div>
+                    <div class="mb-3">  
+                      <label for="description" class="form-label">描述信息:</label>  
+                      <input type="text" class="form-control" id="miaoshu_info" name="description">  
+                    </div>  
+                    <div class="mb-3">  
+                      <label for="measurementPoint" class="form-label">测点:</label>  
+                      <input type="text" class="form-control" id="cedian" name="measurementPoint">  
+                    </div>  
+                    <div class="mb-3">  
+                      <label for="measurementPointStatus" class="form-label">测点状态:</label>  
+                      <input type="text" class="form-control" id="cedian_status" name="measurementPointStatus">  
+                    </div>  
+                    <div class="mb-3">  
+                      <label for="measurementPointDescription" class="form-label">测点描述:</label>  
+                      <input type="text" class="form-control" id="cedian_desc" name="measurementPointDescription">  
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                  <button type="button" class="btn btn-primary" onclick="createChannel()">提交</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="upgradeDataModal" tabindex="-1" aria-labelledby="upgradeDataModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="upgradeDataModalLabel">修改摄像头</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                </div>
+                <div class="modal-body">
+                  <form action="" method="post" id="DataloadForm">
+                    <div class="mb-3">
+                      <label for="channel_id" class="form-label">通道ID:</label>
+                      <input type="text" class="form-control" id="new_channel_id" name="channelId" disabled>
+                    </div>
+                    <div class="mb-3">
+                      <label for="channel_name" class="form-label">通道名字:</label>
+                      <input type="text" class="form-control" id="new_channel_name" name="channel_name">
+                    </div>
+                    <div class="mb-3">
+                      <label for="sampling_rate" class="form-label">采样率:</label>
+                      <input type="text" class="form-control" id="new_sampling_rate" name="samplingRate">
+                    </div>
+                    <div class="mb-3">
+                      <label for="mac_address" class="form-label">MAC地址:</label>
+                      <input type="text" class="form-control" id="new_mac_address" name="macAddress">
+                    </div>
+                    <div class="mb-3">
+                      <label for="channel" class="form-label">通道:</label>
+                      <input type="text" class="form-control" id="new_channel" name="channel">
+                    </div>
+                    <div class="mb-3">
+                      <label for="unit" class="form-label">单位:</label>
+                      <input type="text" class="form-control" id="new_unit" name="unit">
+                    </div>
+                    <div class="mb-3">
+                      <label for="status" class="form-label">方向:</label>
+                      <input type="text" class="form-control" id="new_status" name="Dir" disabled>
+                    </div>
+                    <div class="mb-3">  
+                      <label for="description" class="form-label">描述信息:</label>  
+                      <input type="text" class="form-control" id="new_miaoshu_info" name="description">  
+                    </div>  
+                    <div class="mb-3">  
+                      <label for="measurementPoint" class="form-label">测点:</label>  
+                      <input type="text" class="form-control" id="new_cedian" name="measurementPoint">  
+                    </div>  
+                    <div class="mb-3">  
+                      <label for="measurementPointStatus" class="form-label">测点状态:</label>  
+                      <input type="text" class="form-control" id="new_cedian_status" name="measurementPointStatus">  
+                    </div>  
+                    <div class="mb-3">  
+                      <label for="measurementPointDescription" class="form-label">测点描述:</label>  
+                      <input type="text" class="form-control" id="new_cedian_desc" name="measurementPointDescription">  
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                  <button type="button" class="btn btn-primary" id="changedata">提交</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer
+        class="footer d-flex flex-column flex-md-row align-items-center justify-content-between px-4 py-3 border-top small">
+        <p class="text-muted mb-1 mb-md-0">Copyright © 2024 <a href="http://www.szadpr.cn/"
+            target="_blank">深圳防灾减灾技术研究院</a>
+        </p>
+      </footer>
+    </div>
+  </div>
+  <script src="./dist/js/core.js"></script>
+  <script src="./dist/js/jquery.min.js"></script>
+  <script src="./dist/js/jquery.cookie.js"></script>
+  <script src="./dist/js/jquery.dataTables.js"></script>
+  <script src="./dist/js/dataTables.bootstrap5.js"></script>
+  <script src="./dist/js/bootstrap-table.min.js"></script>
+  <script src="./dist/js/bootstrap-table-zh-CN.min.js"></script>
+  <script src="./dist/js/wz.js"></script>
+  <script src="./dist/js/manageChannels.js"></script>
+  <script src="./dist/js/sweetalert2.min.js"></script>
+  <script src="./dist/js/config_jump.js"></script>
+</body>
+
+</html>

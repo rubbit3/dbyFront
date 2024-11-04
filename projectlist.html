@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>东北缘桥隧预警数据分析处理与产出系统</title>
+    <link rel="icon" href="dist/images/earth.png" type="image/png"> 
+    <link rel="stylesheet" href="./dist/css/projectlist.css">
+    <link rel="stylesheet" href="./dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./dist/css/sweetalert2.min.css">
+</head>
+
+<body>
+    <div class="main-container">
+        <div style="color:aliceblue">
+            <a onclick="usergove()">用户管理</a>
+            <a onclick="logout()">退出</a>
+        </div>
+        <header>
+            <div class="logo-container">
+                <img src="./dist/images/fzjz.png" alt="Logo">
+                &nbsp;&nbsp;&nbsp;
+                <span id="platformname">大震构造活动城市影响观测评估软件</span>
+            </div>
+        </header>
+
+        <div class="projectlist">
+            <div class="items-wrapper">
+                <ul>
+                    <li><a href="#">灾害情景构建分析</a></li>  
+                    <li><a href="#">运行健康状态测评</a></li>  
+                    <li><a href="#">环境实时监测预警</a></li>  
+                    <li><a href="#">结构安全监测预警</a></li>  
+                    <li><a href="#">团体标准技术指南</a></li>  
+                    <li><a href="#">安全事故应急处置</a></li> 
+                </ul>
+            </div>
+            <div class="project-list">
+                <ul class="project-list">  
+                    <li><a onclick="gotoprojectlist(1)"><p  class="project-link">风机</p></a></li>    
+                    <li><a onclick="gotoprojectlist(2)"><p  class="project-link">油气管道</p></a></li>    
+                    <li><a onclick="gotoprojectlist(3)"><p  class="project-link">海湾港口</p></a></li>    
+                    <li><a onclick="gotoprojectlist(4)"><p  class="project-link">隧道(1)</p></a></li>    
+                    <li><a onclick="gotoprojectlist(5)"><p  class="project-link">桥梁(6)</p></a></li>    
+                    <li><a onclick="gotoprojectlist(6)"><p  class="project-link">建筑(14)</p></a></li>    
+                    <li><a onclick="gotoprojectlist(7)"><p  class="project-link">输电塔(1)</p></a></li>    
+                    <li><a onclick="gotoprojectlist(8)"><p  class="project-link">边坡基坑(2)</p></a></li>    
+                    <li><a onclick="gotoprojectlist(9)"><p  class="project-link">水库大坝(1)</p></a></li>   
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <div>Copyright © 2024 深圳防灾减灾技术研究院技术支持</div>
+        </footer>
+    </div>
+    <script src="./dist/js/jquery.min.js"></script>
+    <script src="./dist/js/jquery.cookie.js"></script>
+    <script src="./dist/js/popper.min.js"></script>
+    <script src="./dist/js/wz.js"></script>
+    <script src="./dist/js/projectlist.js"></script>
+    <script src="./dist/js/sweetalert2.min.js"></script>
+</body>
+
+</html>

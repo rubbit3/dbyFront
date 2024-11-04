@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLB Model Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        #model-container {
+            width: 80%;  /* 宽度为80%，以适应更大尺寸 */
+            height: 800px; /* 高度设置为800px，保证较大的显示区域 */
+            background-color: #fff; /* 背景颜色为白色 */
+            border: 1px solid #ccc;
+            margin: 50px auto; /* 居中显示 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+            position: relative;
+            overflow: hidden;
+            cursor: move; /* 鼠标样式为“拖动” */
+        }
+
+        #rotate-button {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="model-container"></div>
+    <button id="rotate-button">旋转展示模型</button> <!-- 添加按钮 -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+    <script>
+        // 创建场景、相机和渲染器
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        
+        // 设置渲染器的大小与 div 一致
+        const container = document.getElementById('model-container');
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setClearColor(0xffffff); // 背景颜色为白色
+        container.appendChild(renderer.domElement);
+
+        // 创建光源
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(1, 1, 1).normalize();
+        scene.add(light);
+
+        const ambientLight = new THREE.AmbientLight(0x404040); // 环境光
+        scene.add(ambientLight);
+
+        let model; // 用于存储加载的模型
+        let isMouseDown = false; // 追踪鼠标按下状态
+        let prevMouseX = 0; // 存储鼠标之前的X位置
+        let prevMouseY = 0; // 存储鼠标之前的Y位置
+
+        // 变量来控制旋转动画
+        let isAutoRotating = false; 
+        let autoRotateProgress = 0; // 记录旋转进度
+
+        // 使用 GLTFLoader 加载 .glb 文件
+        const loader = new THREE.GLTFLoader();
+        loader.load('7.glb', function (gltf) {
+            // loader.load('7.glb', function (gltf) {
+            model = gltf.scene;
+            scene.add(model);
+
+            // 调整模型的位置和缩放比例
+            model.position.set(0, 0, 0); // 将模型稍微下移
+            model.scale.set(1.5, 1.5, 1.5); // 调整模型缩放
+
+            // 调整相机位置，向后拉远
+            camera.position.z = 100; // 将相机初始位置设置得更远，默认距离为25
+
+            // 渲染函数
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // 如果自动旋转启用，则继续旋转
+                if (isAutoRotating) {
+                    const rotationSpeed = 0.02; // 每帧旋转的角度
+                    model.rotation.y += rotationSpeed;
+                    autoRotateProgress += rotationSpeed; // 记录旋转的进度
+
+                    // 如果旋转一圈（2 * Math.PI 弧度），停止旋转
+                    if (autoRotateProgress >= 2 * Math.PI) {
+                        isAutoRotating = false;
+                        autoRotateProgress = 0;
+                    }
+                }
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+        }, undefined, function (error) {
+            console.error(error);
+        });
+
+        // 监听鼠标按下事件，开始旋转
+        container.addEventListener('mousedown', (event) => {
+            if (!isAutoRotating) { // 防止自动旋转期间用户手动旋转
+                isMouseDown = true;
+                prevMouseX = event.clientX; // 获取鼠标按下时的X坐标
+                prevMouseY = event.clientY; // 获取鼠标按下时的Y坐标
+            }
+        });
+
+        // 监听鼠标移动事件，旋转模型
+        container.addEventListener('mousemove', (event) => {
+            if (isMouseDown && model) {
+                const deltaX = event.clientX - prevMouseX; // 鼠标X轴移动距离
+                const deltaY = event.clientY - prevMouseY; // 鼠标Y轴移动距离
+
+                // 根据鼠标移动的距离旋转模型
+                model.rotation.y += deltaX * 0.01; // 左右旋转
+                model.rotation.x += deltaY * 0.01; // 上下旋转（可以根据需求控制）
+
+                prevMouseX = event.clientX; // 更新上一次的X坐标
+                prevMouseY = event.clientY; // 更新上一次的Y坐标
+            }
+        });
+
+        // 监听鼠标抬起事件，停止旋转
+        container.addEventListener('mouseup', () => {
+            isMouseDown = false;
+        });
+
+        // 点击按钮，启动自动旋转
+        document.getElementById('rotate-button').addEventListener('click', () => {
+            isAutoRotating = true; // 开始自动旋转
+            autoRotateProgress = 0; // 重置旋转进度
+        });
+
+        // 监听鼠标滚轮缩放模型
+        container.addEventListener('wheel', (event) => {
+            event.preventDefault(); // 阻止页面的滚动
+            const zoomSpeed = 1; // 缩放速度
+            camera.position.z += event.deltaY * 0.01 * zoomSpeed; // 根据滚轮方向放大缩小
+
+            // 限制缩放的最小和最大距离
+            if (camera.position.z < 10) {
+                camera.position.z = 10; // 最小距离
+            } else if (camera.position.z > 50) {
+                camera.position.z = 50; // 最大距离
+            }
+        });
+
+        // 确保在窗口大小调整时，渲染器和摄像机的宽高比会动态调整
+        window.addEventListener('resize', () => {
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            renderer.setSize(width, height);
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+        });
+    </script>
+
+</body>
+</html>

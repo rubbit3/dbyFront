@@ -1,0 +1,11 @@
+.tangram-suggestion {
+    z-index: 9999999999 !important;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.default {
+    cursor: default;
+}

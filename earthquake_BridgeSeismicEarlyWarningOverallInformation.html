@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>东北缘桥隧预警数据分析处理与产出系统</title>
+    <link rel="icon" href="dist/images/earth.png" type="image/png">
+    <link rel="stylesheet" href="./dist/css/style.css">
+    <link rel="stylesheet" href="./dist/css/font-awesome.5.15.4.all.min.css">
+    
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+    <link rel="stylesheet" href="./dist/css/sweetalert2.min.css">
+
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+   
+    <style>
+        #map {
+            width: 100%;
+            height: 600px;
+        }
+
+        .circle-label {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            color: white;
+            text-align: center;
+            border-radius: 50%;
+            line-height: 40px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        
+    </style>
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="sidebar-brand default" style="font-size:16px" id="goToIndex">
+                    <img src="./dist/images/fzjz.png" alt="" style="width:50px">
+                    ADPR
+                </a>
+            </div>
+            <div class="sidebar-body pointer overflow-auto">
+                <ul class="nav">
+                    <li class="nav-item pointer active">
+                        <a onclick=jumptoBridgeSeismicEarlyWarningOverallInformation() class="nav-link">
+                            <i class="fa fa-home" style="color: white"></i>
+                            <i class="fa fa-pie-chart" aria-hidden="true" style="color: white;"></i>
+                            <span class="link-title" style="font-size:small">桥梁地震预警整体信息图</span>
+                        </a>
+                    </li>
+                    <!-- <li class="nav-item pointer">
+                        <a onclick=jumptoSingleBridgeSeismicEarlyWarningInformation() class="nav-link">
+                            <i class="fa fa-home" style="color: white"></i>
+                            <i class="fa fa-pie-chart" aria-hidden="true" style="color: white"></i>
+                            <span class="link-title" style="font-size:small">单一桥梁地震预警信息图</span>
+                        </a>
+                    </li> -->
+                </ul>
+            </div>
+        </nav>
+        <div class="page-wrapper">
+            <nav class="navbar">
+                <a href="#" class="sidebar-toggler">
+                    <i data-feather="menu"></i>
+                </a>
+                <div class="navbar-content">
+                    <form class="search-form default">
+                        <div class="input-group" style="font-size:23px;color:#fff;font-weight:700">
+                            <span id="platername"></span>
+                        </div>
+                    </form>
+                    <ul class="navbar-nav">
+                        <ul class="navbar-nav">
+                           <!-- <li class="nav-item default" style="float: left;">
+                                <object type="image/svg+xml" data="dist\images\地震预警.svg"></object>
+                                <a class="nav-link" onclick="gotoEarthquake()">地震预警</i></a>
+                            </li> -->
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <li class="nav-item default" style="float: left;">
+                                <object type="image/svg+xml" data="dist\images\烈度速报.svg"></object>
+                                <a class="nav-link" onclick="gotoIntensity()">烈度速报</i></a>
+                            </li>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <li class="nav-item default" style="float: left;">
+                                <object type="image/svg+xml" data="dist\images\项目配置.svg"></object>
+                                <a class="nav-link" onclick="gotoProjectConfig()">项目配置</i></a>
+                            </li>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <li class="nav-item pointer">
+                                <object type="image/svg+xml" data="dist\images\项目列表.svg"></object>
+                                <a class="nav-link" onclick="gotoProjectlist()">项目列表</a>
+                            </li>
+                            <!-- <li class="nav-item pointer">
+                            <a class="nav-link" onclick="gotoProjectlist()">转到主页</a>
+                        </li> -->
+                        </ul>
+                </div>
+            </nav>
+
+            <div class="page-content">
+                <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+                    <div>
+                        <h4 class="mb-3 mb-md-0">桥梁地震预警整体信息图</h4>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="text-muted mb-3"></p>
+                                <!-- <button class="btn btn-primary" onclick="getwarnEarth()">预警信息自动获取</button> -->
+                                <button class="btn btn-primary" onclick="displayData()">预警信息自动获取</button>
+                                <button class="btn btn-primary" onclick="jumptoalarmmanagement()">桥梁异常告警信息模板化管理</button>
+                                <!-- <button class="btn btn-primary">预警告警信息发布</button> -->
+                                <button class="btn btn-primary" onclick="simulateEarthquakeWarning()">模拟地震预警</button> 
+                                <p class="text-muted mb-3"></p>
+                                <div id="map"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                </div>
+
+                <table class="table table-bordered mt-3">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>中文名称</th>
+                            <th>英文名称</th>
+                            <th>键</th>
+                            <th>键值</th>
+                            <th>键值说明</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-table-body">
+                        <!-- 数据行将插入到这里 -->
+                    </tbody>
+                </table>
+
+
+            
+
+
+
+
+
+            </div>
+
+            <footer
+                class="footer d-flex flex-column flex-md-row align-items-center justify-content-between px-4 py-3 border-top small">
+                <p class="text-muted mb-1 mb-md-0">Copyright © 2024 <a href="http://www.szadpr.cn/"
+                        target="_blank">深圳防灾减灾技术研究院</a></p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function displayData() {
+            const jsonData = {
+                "1": "20240731090023.W.0001_1",
+                "2": "0301",
+                "3": "2024-07-31 09:00:33.980",
+                "4": "CB",
+                "5": "",
+                "6": "1.0",
+                "7": "20240731090023.W.0001",
+                "8": "1",
+                "9": "GS",
+                "10": "",
+                "11": "noalert",
+                "12": "2024-07-31 09:00:23.600",
+                "13": "测试",
+                "14": "0.000",
+                "15": "0.000",
+                "16": "0",
+                "17": "0.0",
+                "18": "0"
+            };
+    
+            const headers = [
+                { index: "1", name: "消息ID", enName: "MsgID", key: "1", description: "预警发布消息ID" },
+                { index: "2", name: "消息类型", enName: "MsgType", key: "2", description: "参考值：0101，0201，0301" },
+                { index: "3", name: "发送时间", enName: "SendTime", key: "3", description: "消息发送时间,格式：YYYY-MM-DD hh:mm:ss.SSS" },
+                { index: "4", name: "来源", enName: "MsgSource", key: "4", description: "发布单元ID" },
+                { index: "5", name: "校验码", enName: "CheckCode", key: "5", description: "用于消息体完整性、正确性校验" },
+                { index: "6", name: "版本号", enName: "Version", key: "6", description: "预警发布协议版本号" },
+                { index: "7", name: "事件标识", enName: "EEWID", key: "7", description: "地震事件Id" },
+                { index: "8", name: "序列号", enName: "SerialNumber", key: "8", description: "地震预警事件的发布报文序号" },
+                { index: "9", name: "生产者", enName: "Producer", key: "9", description: "生产单元Id" },
+                { index: "10", name: "接收者", enName: "Receiver", key: "10", description: "接收终端信息" },
+                { index: "11", name: "震中预警等级", enName: "WarnningLevel", key: "11", description: "包括：red、orange、yellow、blue" },
+                { index: "12", name: "发震时间", enName: "Oritime", key: "12", description: "地震发生时间" },
+                { index: "13", name: "震中参考地名", enName: "Locname", key: "13", description: "县级地名" },
+                { index: "14", name: "震中经度", enName: "EpiLon", key: "14", description: "震中经度" },
+                { index: "15", name: "震中纬度", enName: "EpiLat", key: "15", description: "震中纬度" },
+                { index: "16", name: "深度", enName: "Focdepth", key: "16", description: "单位：km" },
+                { index: "17", name: "震级", enName: "Magnitude", key: "17", description: "精度：一位小数" },
+                { index: "18", name: "震中烈度", enName: "EpiIntensity", key: "18", description: "1-12之间数值，单位：度" }
+            ];
+    
+            const tableBody = document.getElementById('data-table-body');
+            tableBody.innerHTML = ''; // 清空表格内容
+    
+            headers.forEach(header => {
+                const value = jsonData[header.key] || "-";
+                const row = `
+                    <tr>
+                        <td>${header.index}</td>
+                        <td>${header.name}</td>
+                        <td>${header.enName}</td>
+                        <td>${header.key}</td>
+                        <td style="color: red">${value}</td>
+                        <td>${header.description}</td>
+                    </tr>
+                `;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+    </script>
+    
+    <script src="./dist/js/core.js"></script>
+    <script src="./dist/js/jquery.min.js"></script>
+    <script src="./dist/js/jquery.cookie.js"></script>
+    <script src="./dist/js/wz.js"></script>
+    <script src="./dist/js/jump.js"></script>
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=9168991cbb6a6e17834cae77702e9071"></script>
+    <script src="./dist/js/earthquake_BridgeSeismicEarlyWarningOverallInformation.js"></script>
+    <script src="./dist/js/sweetalert2.min.js"></script>
+</body>
+
+</html>

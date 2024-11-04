@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>东北缘桥隧预警数据分析处理与产出系统</title>
+    <link rel="icon" href="dist/images/earth.png" type="image/png">
+    <link rel="stylesheet" href="./dist/css/style.css">
+    <link rel="stylesheet" href="./dist/css/font-awesome.5.15.4.all.min.css">
+
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+    <!-- 引入 Owl Carousel 的 CSS -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"> -->
+        <link rel="stylesheet" href="./dist/css/owl.carousel.min.css" />
+        <link rel="stylesheet" href="./dist/css/owl.theme.default.min.css" />
+        <style>
+            .checkbox-container {
+                margin-bottom: 10px; /* 复选框之间的间隔 */
+                display: flex;
+                align-items: center; /* 让复选框与标签垂直居中 */
+            }
+    
+            input[type="checkbox"] {
+                margin-right: 10px; /* 复选框和标签之间的间隔 */
+                accent-color: #007bff; /* 自定义复选框颜色（现代浏览器支持） */
+            }
+    
+        
+    
+            #images img {
+                width: 100%; /* 设置GIF的宽度为父容器宽度 */
+                max-width: auto; /* 设置GIF的最大显示宽度 */
+                height: auto; /* 高度自适应 */
+                margin: 5px 0; /* 设置图片之间的间隔 */
+            }
+            #images h2 {
+            text-align: center; /* 标题居中 */
+            font-size: 18px; /* 字体大小 */
+            margin: 10px 0; /* 标题间距 */
+            }
+
+    
+            /* 立面图和三维图样式 */
+            .card-body img {
+                margin-top: 15px;
+            }
+        </style>
+        
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="sidebar-brand default" style="font-size:16px" id="goToIndex">
+                    <img src="./dist/images/fzjz.png" alt="" style="width:50px">
+                    ADPR
+                </a>
+            </div>
+            <div id="sidebarNav" class="sidebar-body pointer overflow-auto">
+                <ul class="nav">
+                    <li class="nav-item pointer">
+                        <a onclick=jumptodashboard() class="nav-link">
+                            <i class="fa fa-home" style="color: white"></i>
+                            <i class="fa fa-pie-chart" aria-hidden="true" style="color: white"></i>
+                            <span class="link-title">项目信息</span>
+                        </a>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a class="nav-link" role="button">
+                            <i class="fa fa-tasks" style="color: white"></i>
+                            <span class="link-title">状态统计</span>
+                            <i class="link-arrow" data-feather="chevron-down"></i>
+                        </a>
+                        <div class="collapse show" id="StateCount">
+                            <ul class="nav sub-menu">
+                                <li class="nav-item">  
+                                    <a onclick="jumptoProjectStatus()" class="nav-link">项目状态</a>  
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick=jumptoDeviceStatus() class="nav-link">设备状态</a>
+                                </li>
+                                <li class="nav-item">  
+                                    <a onclick="jumptoCedianStatus()" class="nav-link">测点状态</a>  
+                                </li>  
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a class="nav-link" role="button">
+                            <i class="fa fa-tv" style="color: white"></i>
+                            <span class="link-title">实时监测</span>
+                            <i class="link-arrow" data-feather="chevron-down"></i>
+                        </a>
+                        <div class="collapse show" id="RealtimeData">
+                            <ul class="nav sub-menu">
+                                <li class="nav-item">
+                                    <a onclick="jumptotimeCurve()" class="nav-link">时程曲线</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptofftCurve()" class="nav-link">时频曲线</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptoweiyiraoduCurve()" class="nav-link">位移与挠度</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptotimeStationCurve()" class="nav-link">台站数据</a>
+                                </li>
+                                <!-- <li class="nav-item">
+                                    <a onclick="jumptotimefftCurve()" class="nav-link">时程和时频曲线</a>
+                                </li> -->
+                                <!-- <li class="nav-item">
+                                    <a onclick="jumptospeedCurve()" class="nav-link">速度和位移曲线</a>
+                                </li> -->
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a class="nav-link" role="button">
+                            <i class="fa fa-tv" style="color: white"></i>
+                            <span class="link-title">异常数据</span>
+                            <i class="link-arrow" data-feather="chevron-down"></i>
+                        </a>
+                        <div class="collapse show" id="RealtimeData">
+                            <ul class="nav sub-menu">
+                                <li class="nav-item">
+                                    <a onclick="jumptoAnomalyDataAnalysis()" class="nav-link">异常数据分析</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptoAnomalyDataProcessing()" class="nav-link">异常数据处理</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a onclick="jumptodataAnylsis()" class="nav-link">
+                            <i class="fa fa-align-right" style="color: white"></i>
+                            <span class="link-title">数据分析</span>
+                        </a>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a class="nav-link" role="button">
+                            <i class="fa fa-folder" style="color: white"></i>
+                            <span class="link-title">数据管理</span>
+                        </a>
+                        <div class="collapse show" id="DataManage">
+                            <ul class="nav sub-menu">
+                                <li class="nav-item">
+                                    <a onclick="jumptoDataView()" class="nav-link">历史数据查询</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptoDataExport()" class="nav-link">历史数据导出</a>
+                                </li>
+                                <!-- <li class="nav-item">
+                                    <a onclick="jumptoQueryearthquake()" class="nav-link">地震事件查询</a>
+                                </li> -->
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a onclick="jumptoDataWarn()" class="nav-link">
+                            <i class="fa fa-bell" style="color: white"></i>
+                            <span class="link-title">报警管理</span>
+                        </a>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a class="nav-link" role="button">
+                            <i class="fa fa-folder" style="color: white"></i>
+                            <span class="link-title">有限元分析</span>
+                        </a>
+                        <div class="collapse show">
+                            <ul class="nav sub-menu">
+                                <!-- <li class="nav-item">
+                                    <a onclick="jumptoFiniteelementmodel()" class="nav-link">有限元分析模型</a>
+                                </li> -->
+                                <li class="nav-item">
+                                    <a onclick="jumptoFiniteelementmodelAnalysis()" class="nav-link active">模态分析</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptoFiniteelementmodelSimulation()" class="nav-link">仿真模拟</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a onclick="jumpto3D()" class="nav-link">
+                            <i class="fa fa-tv" style="color: white"></i>
+                            <span class="link-title">三维模型</span>
+                        </a>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a class="nav-link" role="button">
+                            <i class="fa fa-folder" style="color: white"></i>
+                            <span class="link-title">档案管理</span>
+                        </a>
+                        <div class="collapse show" id="FileManage">
+                            <ul class="nav sub-menu">
+                                <li class="nav-item">
+                                    <a onclick="jumptoDay()" class="nav-link">每日报告</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptoMonth()" class="nav-link">每月报告</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="jumptoYear()" class="nav-link">年度报告</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item pointer">
+                        <a onclick="jumptoVideoMonitoring()" class="nav-link">
+                            <i class="fa fa-tv" style="color: white"></i>
+                            <span class="link-title">视频监控</span>
+                        </a>
+                    </li>
+                   
+                    <li class="nav-item pointer">
+                        <a onclick="jumptohelp()" class="nav-link">
+                            <i class="fa fa-tv" style="color: white"></i>
+                            <span class="link-title">帮助文档</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="page-wrapper">
+            <nav class="navbar">
+                <a href="#" class="sidebar-toggler">
+                    <i data-feather="menu"></i>
+                </a>
+                <div class="navbar-content">
+                    <form class="search-form default">
+                        <div class="input-group" style="font-size:23px;color:#fff;font-weight:700">
+                            <span id="platername"></span>
+                        </div>
+                    </form>
+                    <ul class="navbar-nav">
+                        <!-- <li class="nav-item default" style="float: left;">
+                            <object type="image/svg+xml" data="dist\images\地震预警.svg"></object>
+                            <a class="nav-link" onclick="gotoEarthquake()">地震预警</i></a>
+                        </li> -->
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <li class="nav-item default" style="float: left;">
+                            <object type="image/svg+xml" data="dist\images\烈度速报.svg"></object>
+                            <a class="nav-link" onclick="gotoIntensity()">烈度速报</i></a>
+                        </li>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <li class="nav-item default" style="float: left;">
+                            <object type="image/svg+xml" data="dist\images\项目配置.svg"></object>
+                            <a class="nav-link" onclick="gotoProjectConfig()">项目配置</i></a>
+                        </li>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <li class="nav-item pointer">
+                            <object type="image/svg+xml" data="dist\images\项目列表.svg"></object>
+                            <a class="nav-link" onclick="gotoProjectlist()">项目列表</a>
+                        </li>
+                        <!-- <li class="nav-item pointer">
+                            <a class="nav-link" onclick="gotoProjectlist()">转到主页</a>
+                        </li> -->
+                    </ul>
+                </div>
+            </nav>
+
+
+            <div class="page-content">
+                <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+                    <div>
+                        <h4 class="mb-3 mb-md-0" id="nameInfo">模态分析</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-xl-6 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">        
+                                <div class="checkbox-container">
+                                    <label><input type="checkbox" value="./dist/images/modal01.gif" onchange="updateImages()"> 阶数 1# 周期:1.14s #特征描述:主梁纵向振动，2、3、4号墩柱纵向弯曲</label>
+                                </div>
+                                <div class="checkbox-container">
+                                    <label><input type="checkbox" value="./dist/images/modal02.gif" onchange="updateImages()"> 阶数 2# 周期:0.7392s #特征描述:主梁侧弯，2、3、4号墩柱侧弯</label>
+                                </div>
+                                <div class="checkbox-container">
+                                    <label><input type="checkbox" value="./dist/images/modal03.gif" onchange="updateImages()"> 阶数 3# 周期:0.7246s #特征描述:主梁竖向一阶反对称弯曲</label>
+                                </div>
+                                <div class="checkbox-container">
+                                    <label><input type="checkbox" value="./dist/images/modal04.gif" onchange="updateImages()"> 阶数 4# 周期:0.7019s #特征描述:主梁横向一阶反对称弯曲</label>
+                                </div>
+                                <div class="checkbox-container">
+                                    <label><input type="checkbox" value="./dist/images/modal05.gif" onchange="updateImages()"> 阶数 5# 周期:0.552s #特征描述:一侧端部主梁横向一阶对称弯曲</label>
+                                </div>
+                                <div class="checkbox-container">
+                                    <label><input type="checkbox" value="./dist/images/modal06.gif" onchange="updateImages()"> 阶数 6# 周期:0.519s #特征描述:主梁一阶对称竖弯</label>
+                                </div>
+                                <div class="checkbox-container">
+                                    <label><input type="checkbox" value="./dist/images/modal07.gif" onchange="updateImages()"> 阶数 7# 周期:0.4921s #特征描述:另一侧端部主梁横向一阶对称弯曲</label>
+                                </div>
+                                <div class="checkbox-container">
+                                    <label><input type="checkbox" value="./dist/images/modal08.gif" onchange="updateImages()"> 阶数 8# 周期:0.3615s #特征描述:主梁竖二阶反对称向弯曲</label>
+                                </div>
+                                <div class="checkbox-container">
+                                    <label><input type="checkbox" value="./dist/images/modal09.gif" onchange="updateImages()"> 阶数 9# 周期:0.3372s #特征描述:主梁横向二阶反对称弯曲</label>
+                                </div>
+                                <div class="checkbox-container">
+                                    <label><input type="checkbox" value="./dist/images/modal10.gif" onchange="updateImages()"> 阶数 10# 周期:0.3242s #特征描述:主梁竖向一阶竖弯</label>
+                                </div>
+
+                                <!-- <div>
+                                    <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; text-align: center; border-collapse: collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th>阶数</th>
+                                                <th>周期(s)</th>
+                                                <th>特征描述</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>1.14</td>
+                                                <td>主梁纵向振动，2、3、4号墩柱纵向弯曲</td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>0.7392</td>
+                                                <td>主梁侧弯，2、3、4号墩柱侧弯</td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>0.7246</td>
+                                                <td>主梁竖向一阶反对称弯曲</td>
+                                            </tr>
+                                            <tr>
+                                                <td>4</td>
+                                                <td>0.7019</td>
+                                                <td>主梁横向一阶反对称弯曲</td>
+                                            </tr>
+                                            <tr>
+                                                <td>5</td>
+                                                <td>0.552</td>
+                                                <td>一侧端部主梁横向一阶对称弯曲</td>
+                                            </tr>
+                                            <tr>
+                                                <td>6</td>
+                                                <td>0.519</td>
+                                                <td>主梁一阶对称竖弯</td>
+                                            </tr>
+                                            <tr>
+                                                <td>7</td>
+                                                <td>0.4921</td>
+                                                <td>另一侧端部主梁横向一阶对称弯曲</td>
+                                            </tr>
+                                            <tr>
+                                                <td>8</td>
+                                                <td>0.3615</td>
+                                                <td>主梁竖二阶反对称向弯曲</td>
+                                            </tr>
+                                            <tr>
+                                                <td>9</td>
+                                                <td>0.3372</td>
+                                                <td>主梁横向二阶反对称弯曲</td>
+                                            </tr>
+                                            <tr>
+                                                <td>10</td>
+                                                <td>0.3242</td>
+                                                <td>主梁竖向一阶竖弯</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div> -->
+                                
+            
+                                <span>立面图</span>
+                                <img src="./dist/images/立面图.png" width="100%" alt="">
+                                <span>三维图</span>
+                                <img src="./dist/images/三维图.png" width="100%" alt="">
+                            </div>
+                        </div>
+                    </div>
+            
+                    <div class="col-lg-6 col-xl-6 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <div id="images"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer
+                class="footer d-flex flex-column flex-md-row align-items-center justify-content-between px-4 py-3 border-top small">
+                <p class="text-muted mb-1 mb-md-0">Copyright © 2024 <a href="http://www.szadpr.cn/"
+                        target="_blank">深圳防灾减灾技术研究院</a></p>
+            </footer>
+        </div>
+    </div>
+    <script src="./dist/js/core.js"></script>
+    <script src="./dist/js/jquery.min.js"></script>
+    <script src="./dist/js/jquery.cookie.js"></script>
+    <script src="./dist/js/wz.js"></script>
+    <script src="./dist/js/FiniteelementmodelAnalysis.js"></script>
+    <script src="./dist/js/jump.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script> -->
+    <script src="./dist/js/owl.carousel.min.js"></script>
+    <script>
+        function updateImages() {
+            const container = document.getElementById('images');
+            container.innerHTML = ''; // 清空当前展示的图片
+    
+            // 获取所有选中的复选框
+            const checkboxes = document.querySelectorAll('.checkbox-container input[type="checkbox"]:checked');
+    
+            checkboxes.forEach(checkbox => {
+                const img = document.createElement('img');
+                img.src = checkbox.value; // 设置图片源
+                  // 创建一个 h2 元素作为标题
+                const title = document.createElement('h2');
+                title.textContent = checkbox.nextSibling.textContent; // 获取复选框旁边的文本
+
+                container.appendChild(img); // 将图片添加到展示区域
+                container.appendChild(title);
+            });
+        }
+    </script>
+
+</body>
+
+</html>

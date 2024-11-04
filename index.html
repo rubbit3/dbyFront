@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>东北缘桥隧预警数据分析处理与产出系统</title>
+  <link rel="icon" href="dist/images/earth.png" type="image/png">
+  <link rel="stylesheet" href="./dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./dist/css/style.css">
+  <link rel="stylesheet" href="./dist/css/index.css">
+  <link rel="stylesheet" href="./dist/css/sweetalert2.min.css">
+  <link rel="stylesheet" href="./dist/css/font-awesome.5.15.4.all.min.css">
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+
+  <link rel="stylesheet" href="./dist/css/leaflet.css" />
+
+
+</head>
+
+<body>
+  <div class="main-wrapper">
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <!-- <a href="#" class="sidebar-brand default" style="font-size:16px">
+              <img src="./dist/images/fzjz.png" alt="" style="width:50px">
+              ADPR
+            </a> -->
+        <a href="#" class="sidebar-brand default" style="font-size:16px" id="goToIndex">
+          <img src="./dist/images/fzjz.png" alt="" style="width:50px">
+          ADPR
+        </a>
+        <div>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+      <div class="sidebar-body">
+        <br>
+        <span style="padding-left: 1rem;font-weight: bolder;color:#fff;font-size: 16px;" id="typename"></span>
+        <ul class="treeview-menu" style="padding-left: 2rem;">
+          <br>
+          <table id="dg_projects" style="padding-left:2rem;color:#fff">
+          </table>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="page-wrapper">
+      <nav class="navbar">
+        <a href="#" class="sidebar-toggler">
+          <i data-feather="menu"></i>
+        </a>
+        <div class="navbar-content">
+          <form class="search-form default">
+            <div class="input-group" style="font-size:23px;color:#fff;font-weight:700">
+              <span id="platername"></span>
+            </div>
+          </form>
+          <ul class="navbar-nav default">
+            <li class="nav-item pointer" style="float: left;" id="usermanagement">
+              <!-- <i><object type="image/svg+xml" data="dist\images\管理员.svg"></object></i> -->
+
+              <span class="icon" style="display: inline-block;">
+                <object type="image/svg+xml" data="dist\images\管理员.svg" style="vertical-align: middle;"></object>
+              </span>
+              &nbsp;&nbsp;
+              <a class="nav-link" onclick=jumptoUserManage()>用户管理</a>
+            </li>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <li class="nav-item pointer" style="float: left;">
+              <!-- <i><object type="image/svg+xml" data="dist\images\添加项目.svg"></object></i> -->
+              <span class="icon" style="display: inline-block;">
+                <object type="image/svg+xml" data="dist\images\添加项目.svg" style="vertical-align: middle;"></object>
+              </span>
+              &nbsp;&nbsp;
+              <a class="nav-link" id='showap' data-bs-toggle="modal" data-bs-target="#exampleModal">添加项目</a>
+            </li>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <li class="nav-item pointer" style="float: left;">
+
+              <span class="icon" style="display: inline-block;">
+                <object type="image/svg+xml" data="dist\images\退出.svg" style="vertical-align: middle;"></object>
+              </span>
+              &nbsp;&nbsp;
+              <a class="nav-link" onclick=logout()>退出</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="page-content">
+        <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+          <div>
+            <h4 class="mb-3 mb-md-0" id="typename-page-content"></h4>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+              aria-hidden="true" style="z-index: 9999999;">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">添加项目</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label for="newproject_name" class="form-label">请输入新建的项目名称:</label>
+                      <input type="text" class="form-control" id="newproject_name">
+                      <br>
+                      <div>
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                          <li class="nav-item">
+                            <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab"
+                              aria-controls="home" aria-selected="true">项目描述</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab"
+                              aria-controls="profile" aria-selected="false">项目位置</a>
+                          </li>
+                        </ul>
+                        <div class="tab-content border border-top-0 p-3" id="myTabContent">
+                          <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <textarea class="form-control" id="newproject_Desc"></textarea>
+                          </div>
+                          <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            请输入地址：<input id="suggestCity" type="text" style="margin-right:50px;" />
+                            </br>
+                            请输入经度：<input id="suggestLong" type="text" style="margin-right:50px;" />
+                            </br>
+                            请输入纬度：<input id="suggestLat" type="text" style="margin-right:50px;" />
+                            <div style="height: 195px; text-align: center;line-height: 350px;font-size: 20px;">
+                              <div id="world-map2" style="height: 200px; width: 100%;"></div>
+                            </div>
+                            <div id='searchResultPanel'
+                              style='border:1px solid #C0C0C0;width:150px;height:auto; display:none;'>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                    <button type="button" id="create" onclick="AddProject()" class="btn btn-primary">创建</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-lg-12 stretch-card grid-margin">
+            <div class="card">
+              <div class="card-body">
+                <!-- <div id="world-map" style="height: 850px; width: 100%;"></div> -->
+
+                <div id="map" style="height: 850px; width: 100%;background-color: #C0C0C0;"></div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer
+        class="footer d-flex flex-column flex-md-row align-items-center justify-content-between px-4 py-3 border-top small">
+        <p class="text-muted mb-1 mb-md-0">Copyright © 2024 <a href="http://www.szadpr.cn/"
+            target="_blank">深圳防灾减灾技术研究院</a></p>
+      </footer>
+    </div>
+  </div>
+  <script src="./dist/js/core.js"></script>
+  <script src="./dist/js/jquery.min.js"></script>
+  <script src="./dist/js/jquery.cookie.js"></script>
+  <script src="./dist/js/wz.js"></script>
+  <script src="./dist/js/index.js"></script>
+  <script src="./dist/js/jump.js"></script>
+  <!-- <script src="http://api.map.baidu.com/api?v=2.0&ak=w9CffMpls7o003N3KSYbFQ22Lo08n53C&callback"></script> -->
+  <script src="./dist/js/sweetalert2.min.js"></script>
+
+
+  <script src="./dist/js/leaflet.js"></script>
+  <!-- <script src="./dist/file/甘肃省 (1).json"></script> -->
+  <script src="./dist/file/620000.geoJson"></script>
+
+
+  <script>
+    // 创建地图并设置中心点和缩放级别
+    const map = L.map('map').setView([36.0614, 103.8342], 7);
+
+    // 添加 OpenStreetMap 基础图层
+    // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //     maxZoom: 19,
+    //     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    // }).addTo(map);
+
+    // 加载 GeoJSON 数据
+    fetch('./dist/file/620000.geoJson') // 本地路径
+        .then(response => response.json())
+        .then(data => {
+            // 添加 GeoJSON 数据到地图
+            L.geoJSON(data, {
+                onEachFeature: function (feature, layer) {
+                    // 为每个市添加标记和名称
+                    if (feature.properties && feature.properties.name) {
+                        layer.bindPopup(feature.properties.name); // 显示市名
+                    }
+                }
+            }).addTo(map);
+        })
+        .catch(error => console.error('Error loading GeoJSON:', error));
+
+    // 添加坐标标记
+    const coordinates = [
+        { coord: [36.0614, 103.8342], name: "兰州" },
+        // 可以添加更多的城市坐标
+    ];
+
+    coordinates.forEach(item => {
+        L.marker(item.coord).addTo(map) // 在坐标位置添加标记
+            .bindPopup(item.name); // 绑定市名到标记
+    });
+
+</script>
+<!-- 
+  <script>
+    // 创建地图
+    const map = L.map('map').setView([36.0614, 103.8342], 7); // 设置中心点和缩放级别
+
+    // 加载 GeoJSON 数据
+    fetch('./dist/file/甘肃省 (1).json') // 本地路径
+      .then(response => response.json())
+      .then(data => {
+        // 添加 GeoJSON 数据到地图
+        L.geoJSON(data, {
+          onEachFeature: function (feature, layer) {
+            // 为每个市添加标记和名称
+            if (feature.properties && feature.properties.name) {
+              layer.bindPopup(feature.properties.name); // 显示市名
+            }
+          }
+        }).addTo(map);
+      });
+
+    // 添加坐标标记
+    const coordinates = [
+      { coord: [36.0614, 103.8342], name: "兰州" },
+      
+    ];
+
+    coordinates.forEach(item => {
+      L.marker(item.coord).addTo(map) // 在坐标位置添加标记
+        .bindPopup(item.name); // 绑定市名到标记
+    });
+
+  </script> -->
+
+
+</body>
+
+</html>

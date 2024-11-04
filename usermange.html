@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>东北缘桥隧预警数据分析处理与产出系统</title>
+    <link rel="icon" href="dist/images/earth.png" type="image/png">
+    <link rel="stylesheet" href="./dist/css/style.css">
+    <link rel="stylesheet" href="./dist/css/test.css">
+
+    <link rel="stylesheet" href="./dist/css/font-awesome.5.15.4.all.min.css">
+<!--     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+
+    <link rel="stylesheet" href="./dist/css/sweetalert2.min.css">
+    <link rel="stylesheet" href="./dist/css/dataTables.bootstrap5.css">
+    <link rel="stylesheet" href="./dist/css/bootstrap-table@1.21.0.min.css">
+
+    <!-- <link href="http://cdn.bootcss.com/bootstrap-daterangepicker/2.1.25/daterangepicker.css" rel="stylesheet"> -->
+    <link href="./dist//css//daterangepicker.css" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="./dist/css/metroStyle/metroStyle.css" type="text/css">
+</head>
+
+<body>
+    <!-- 用户管理 -->
+    <div class="main-wrapper">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="sidebar-brand default" style="font-size:16px" id="goToIndex">
+                    <img src="./dist/images/fzjz.png" alt="" style="width:50px">
+                    ADPR
+                </a>
+            </div>
+            <div class="sidebar-body pointer">
+                <ul class="nav">
+                    <li class="alluser-nav-item nav-item pointer active">
+                        <a onclick=alluser() class="nav-link">
+                            <i class="link-icon" data-feather="users"></i>
+                            <span class="link-title">所有子用户</span>
+                        </a>
+                    </li>
+                    <li class="admin-nav-item nav-item pointer">
+                        <a onclick="admin()" class="nav-link">
+                            <i class="link-icon" data-feather="user"></i>
+                            <span class="link-title">管理员</span>
+                        </a>
+                    </li>
+                    <li class="tourist-nav-item nav-item pointer">
+                        <a onclick="tourist()" class="nav-link">
+                            <i class="link-icon" data-feather="user"></i>
+                            <span class="link-title">访客</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="page-wrapper">
+            <nav class="navbar">
+                <a href="#" class="sidebar-toggler">
+                    <i data-feather="menu"></i>
+                </a>
+                <div class="navbar-content">
+                    <form class="search-form default">
+                        <div class="input-group" style="font-size:23px;color:#fff;font-weight:700">
+                            <span id="platername"></span>
+                        </div>
+                    </form>
+                    <ul class="navbar-nav">
+                        <li class="nav-item pointer">
+                            <a class="nav-link" onclick="gotoProjectlist()">转到主页</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="page-content">
+                <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+                    <div>
+                        <h4 class="mb-3 mb-md-0" id="nameInfo">用户管理</h4>
+                    </div>
+                </div>
+
+                <div class="row" id="buttonpart">
+                    <div class="col-lg-12 stretch-card grid-margin">
+                        <div class="card">
+                            <div class="card-body">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#addDEVModal" data-bs-whatever="@getbootstrap"
+                                    onclick="superadmin()">superadmin</button>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#adduserModal" data-bs-whatever="@getbootstrap">添加用户</button>
+                                <div class="modal fade" id="adduserModal" tabindex="-1" aria-labelledby="adduserModal"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="adduserModalLabel">添加用户</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="btn-close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form>
+                                                    <div class="form-check mb-2">
+                                                        <input type="radio" class="form-check-input"
+                                                            name="radioSelected" id="role" name="optradio" value="a">
+                                                        <label class="form-check-label" for="radioSelected">
+                                                            管理员
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check mb-2">
+                                                        <input type="radio" class="form-check-input"
+                                                            name="radioSelected" id="role" name="optradio" value="u">
+                                                        <label class="form-check-label" for="radioSelected">
+                                                            访客
+                                                        </label>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="recipient-name" class="form-label">用户名:</label>
+                                                        <input type="text" class="form-control" id="name">
+                                                        <span style="color:red;font-size:12px" id="nametip"></span>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="message-text" class="form-label">密码:</label>
+                                                        <input type="password" id="password" class="form-control"
+                                                            id="recipient-devcontent">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="message-text" class="form-label">用户备注:</label>
+                                                        <input type="text" id="description" class="form-control"
+                                                            id="recipient-devcontent">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="message-text" class="form-label">联系电话:</label>
+                                                        <input type="text" id="phone" class="form-control"
+                                                            id="recipient-devcontent">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="recipient-name" class="form-label">电子邮箱:</label>
+                                                        <input type="text" class="form-control" id="email"
+                                                            onblur="myFunction()">
+                                                        <span style="color:red;font-size:12px" id="emailtip"></span>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">关闭</button>
+                                                <button type="button" id="addRowbtn" class="btn btn-primary"
+                                                    onclick="RegisterUser()">提交</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" id="tablexx">
+                    <div class="col-lg-12 stretch-card grid-margin">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="tab-pane" id="user_edit" style="font-size: 14px;display:none">
+                                </div>
+                                <div class="tab-pane" id="user_tab_edit" style="font-size: 14px;display:none">
+                                </div>
+                                <div id="user_tab_superadmin">
+                                    <h5>所有子用户</h5>
+                                    <br>
+                                    <table id="table" data-locale="zh-CN" class="table table-bordered table-hover">
+                                    </table>
+                                </div>
+                                <div id="user_tab_admin" style="display:none">
+                                    <h5>管理员</h5>
+                                    <br>
+                                    <table id="admintable" data-locale="zh-CN" class="table table-bordered table-hover">
+                                    </table>
+                                </div>
+                                <div id="user_tab_tourist" style="display:none">
+                                    <h5>访客</h5>
+                                    <br>
+                                    <table id="touristtable" data-locale="zh-CN"
+                                        class="table table-bordered table-hover"> </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" id="viewdenglu" style="display:none">
+                    <div class="col-lg-12 stretch-card grid-margin">
+                        <div class="card">
+                            <div class="card-body">
+                                <div>
+                                    <a class="btn btn-default btn-sm" style="border-style:none;" onclick="returnmain()"
+                                        href="#"><i class="fa fa-reply fa-lg" style="color:green;"></i> 返回</a>
+                                    <br>
+                                    <br>
+                                    <h5>登陆记录（近半个月内）</h5>
+                                    <br>
+                                    <p>按时间段查询:</p>
+                                    <br>
+                                    <div>
+                                        <button type="button" class="btn btn-outline-primary" id="daterange3-btn">
+                                            <i class="fa fa-calendar"></i>
+                                            <span>时间</span>
+                                            <i class="fa fa-caret-down"></i>
+                                        </button>
+                                    </div>
+                                    <br>
+                                    <button type="button" class="btn btn-primary" onclick="search()">查询</button>
+                                    <table id="loginrecord" data-locale="zh-CN"
+                                        class="table table-bordered table-hover"> </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer
+                class="footer d-flex flex-column flex-md-row align-items-center justify-content-between px-4 py-3 border-top small">
+                <p class="text-muted mb-1 mb-md-0">Copyright © 2024 <a href="http://www.szadpr.cn/"
+                        target="_blank">深圳防灾减灾技术研究院</a></p>
+            </footer>
+        </div>
+    </div>
+    <script src="./dist/js/core.js"></script>
+    <script src="./dist/js/jquery.min.js"></script>
+    <script src="./dist/js/jquery.cookie.js"></script>
+    <script src="./dist/js/jquery.dataTables.js"></script>
+    <script src="./dist/js/dataTables.bootstrap5.js"></script>
+    <script src="./dist/js/bootstrap-table.min.js"></script>
+    <script src="./dist/js/bootstrap-table-zh-CN.min.js"></script>
+    <script src="./dist/js/wz.js"></script>
+    <script src="./dist/js/usermange.js"></script>
+    <script src="./dist/js/sweetalert2.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap-daterangepicker/2.1.25/moment.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap-daterangepicker/2.1.25/daterangepicker.js"></script>
+    <script src="./dist/js/jump.js"></script>
+
+    <script type="text/javascript" src="./dist/js/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="./dist/js/jquery.ztree.excheck.min.js"></script>
+    <script type="text/javascript" src="./dist/js/jquery.ztree.exedit.js"></script>
+</body>
+
+</html>
