@@ -87,7 +87,9 @@ function exportData() {
     console.log(startTime, endTime);
 
     console.log(`Exporting data for channel ${channel} from ${startTimeStr} to ${endTimeStr}`);
-    fetch(wz[38], {
+    // fetch(wz[38], {
+    fetch('127.0.0.1:5000/download_data', {
+
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -122,10 +124,10 @@ function exportData() {
 }
 
 // Function to download file (simulated)
-function downloadFile(fileName) {
-    alert(`Downloading file: ${fileName}`);
-    // Implement actual file download logic here
-}
+// function downloadFile(fileName) {
+//     alert(`Downloading file: ${fileName}`);
+//     // Implement actual file download logic here
+// }
 
 // Function to delete record (simulated)
 function deleteRecord(fileName) {
@@ -135,52 +137,6 @@ function deleteRecord(fileName) {
     }
 }
 
-// function ExportDataTable() {
-//     $.ajax({
-//         type: "GET",
-//         url: wz[39],
-//         contentType: "application/json;charset=utf-8",
-//         dataType: "json",
-//         data: '',
-//         jsonp: 'callback',
-//         success: function (msg) {
-//             console.log(msg)
-//             const exportedData = msg.data
-//             const tableBody = document.getElementById('exportDataTable');
-//             tableBody.innerHTML = '';
-
-//             exportedData.forEach(data => {
-//                 const row = `  
-//                  <tr>  
-//                                  <td>${data.id}</td>  
-//                                  <td>${data.startTime}</td>  
-//                                  <td>${data.endTime}</td>  
-//                                  <td>完成</td>  
-//                                  <td><a href="#" onclick="downloadFile('${data.fileName}')">${data.fileName}</a></td>  
-//                                  <td>${data.exportTime}</td>  
-
-//                              </tr>  
-
-//                          `;
-//                 //  <tr>  
-//                 //      <td>${data.channel}</td>  
-//                 //      <td>${data.startTime}</td>  
-//                 //      <td>${data.endTime}</td>  
-//                 //      <td>${data.status}</td>  
-//                 //      <td><a href="#" onclick="downloadFile('${data.fileName}')">${data.fileName}</a></td>  
-//                 //      <td>${data.createTime}</td>  
-//                 //     <td><span class="delete-btn" onclick="deleteRecord('${data.fileName}')"><i class="fas fa-trash-alt"></i></span></td>  
-//                 //  </tr>  
-//                 tableBody.innerHTML += row;
-//             });
-
-//             document.querySelector('.export-warning').style.display = 'block';
-//         },
-//         error: function () {
-//             console.logs("错误");
-//         }
-//     });
-// }
 
 
 function ExportDataTable() {
@@ -223,6 +179,17 @@ function ExportDataTable() {
         }
     });
 }
+
+// 文件下载函数
+function downloadFile(fileName) {
+
+    console.log('file name is ',fileName)
+    // 构造下载的 URL
+    const url = `http://127.0.0.1:5000/download?fileName=${encodeURIComponent(fileName)}`;
+    console.log('ask url is ',url)
+    // 使用浏览器跳转 URL，触发文件下载
+    window.location.href = url;
+  }
 
 function formatUnixTimestamp(timestamp) {
     const date = new Date(timestamp * 1000); // Convert to milliseconds
