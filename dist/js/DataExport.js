@@ -88,7 +88,8 @@ function exportData() {
 
     console.log(`Exporting data for channel ${channel} from ${startTimeStr} to ${endTimeStr}`);
     // fetch(wz[38], {
-    fetch('127.0.0.1:5000/download_data', {
+    // fetch('127.0.0.1:5000/download_data', {
+    fetch(wz[52], {
 
         method: 'POST',
         headers: {

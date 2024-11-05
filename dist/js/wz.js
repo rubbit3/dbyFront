@@ -157,7 +157,7 @@ wz[50] = ip + "/station/get"
 wz[51] = ip + "/station/getdata"
 
 // 导出excel数据
-// wz[52] =  "127.0.0.1:5000/download_data"
+wz[52] =  "http://127.0.0.1:5000/download_data"
 
 // /**实时加速度数据(往前回溯10s) */
 // wz[0] = ip + "/sensorData/current-com";
