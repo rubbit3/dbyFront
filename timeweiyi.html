@@ -17,6 +17,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
     <link rel="stylesheet" href="./dist/css/metroStyle/metroStyle.css" type="text/css">
 
+
 </head>
 
 <body>
@@ -323,22 +324,18 @@
     </div>
 
 
+
     <script src="./dist/js/core.js"></script>
     <script src="./dist/js/jquery.min.js"></script>
     <script src="./dist/js/jquery.cookie.js"></script>
     <script src="./dist/js/wz.js"></script>
     <script src="./dist/js/jump.js"></script>
-    <script src="./dist/js/timeWeiyi.js"></script>
-
-
     <script type="text/javascript" src="./dist/js/jquery.ztree.core.js"></script>
     <script type="text/javascript" src="./dist/js/jquery.ztree.excheck.min.js"></script>
     <script type="text/javascript" src="./dist/js/jquery.ztree.exedit.js"></script>
-
     <script src="./dist/js/echarts.min.js"></script>
-
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> -->
     <script src="./dist/js/html2canvas.min.js"></script>
+    <script src="./dist/js/timeWeiyi.js"></script>
 
 
     <script>
@@ -356,113 +353,6 @@
     </script>
 
 
-    <!-- <script>
-document.getElementById('query-button').addEventListener('click', function () {
-    const channelSelect = document.getElementById('channel-select');
-   
-
-    const selectedChannel = channelSelect.value;
-
-    let startTime = document.getElementById('startTime').value;
-    let endTime = document.getElementById('endTime').value;
-    console.log(startTime, endTime);
-
-    if (!startTime || !endTime) {
-        alert('开始时间和结束时间不能为空');
-        return;
-    }
-    startTime = Math.floor(new Date(startTime).getTime() / 1000);
-    endTime = Math.floor(new Date(endTime).getTime() / 1000);
-
-    // 调用发起请求的函数
-    sendRequest(selectedChannel, startTime, endTime);
-});
-
-function sendRequest(channelId, startTime, endTime) {
-    const data = {
-        id: channelId,
-        startTime: startTime,
-        endTime: endTime
-    };
-
-    // 发起 AJAX 请求
-    $.ajax({
-        type: "POST", // 根据需要选择请求类型
-        url: "http://10.62.213.53:9000/weiyi/get", // 替换为实际的 API 地址
-        contentType: "application/json;charset=utf-8",
-        dataType: "json",
-        data: JSON.stringify(data),
-        success: function (response) {
-            // 处理返回的数据
-            console.log('查询结果:', response);
-            // 在这里处理返回的数据
-            // 调用函数生成表格
-
-            generateTable(response.data);
-            // generateChart(response.data);
-
-        },
-        error: function (res) {
-            console.error('请求错误:', res);
-        }
-    });
-}
-
-
-
-
-function generateTable(data) {
-    const container = document.getElementById('chart-container');
-    container.innerHTML = '';
-
-    const table = document.createElement('table');
-    table.className = 'table table-bordered';
-
-    const thead = document.createElement('thead');
-    const headerRow = document.createElement('tr');
-
-    // 定义需要显示的列及其中文名称
-    const columns = {
-        // "_id": "ID",
-        "channel_name": "通道名称",
-        "formattedStartTime": "时间",
-        "Value": "值",
-        // "DataTime": "数据时间",
-        "Unit": "单位",
-        "Name": "类型"
-    };
-
-    // 创建表头
-    for (const key in columns) {
-        const th = document.createElement('th');
-        th.textContent = columns[key]; // 使用中文列名
-        headerRow.appendChild(th);
-    }
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
-
-    // 创建表体
-    const tbody = document.createElement('tbody');
-
-    data.forEach(item => {
-        const row = document.createElement('tr');
-        for (const key in columns) {
-            const td = document.createElement('td');
-            td.textContent = item[key]; // 获取对应字段的值
-            row.appendChild(td);
-        }
-        tbody.appendChild(row);
-    });
-
-    table.appendChild(tbody);
-    container.appendChild(table);
-}
-
-
-    
-
-
-    </script> -->
 </body>
 
 </html>

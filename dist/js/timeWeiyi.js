@@ -70,95 +70,103 @@ function sendRequest(channelId, startTime, endTime) {
     });
 }
 
-
-
 function generateChart(data) {
     const container = document.getElementById('chart-container');
-
+    console.log('更新图的数据是1')
     // 如果 myChart 尚未初始化，则初始化它
     if (!myChart) {
         myChart = echarts.init(container);
     }
-
+    console.log('更新图的数据是2')
     // 准备数据
     const xAxisData = data.map(item => item.formattedStartTime);
+
+    console.log('x轴的数据是', xAxisData)
     const seriesData = data.map(item => item.Value);
+    console.log('y轴的数据是', seriesData)
     const channelNames = data.map(item => item.channel_name);
     const units = data.map(item => item.Unit);
+
+    // 计算数据的最大值和最小值
+    const maxDataValue = Math.max(...seriesData);
+    const minDataValue = Math.min(...seriesData);
+
+    // 计算 y 轴的范围，放大 20% 的范围
+    const rangeBuffer = (maxDataValue - minDataValue) * 2;  // 20% 的 buffer
+    const yAxisMin = parseFloat((minDataValue - rangeBuffer).toFixed(2));
+    const yAxisMax = parseFloat((maxDataValue + rangeBuffer).toFixed(2));
 
     // 配置图表选项
     const option = {
         title: {
-            // text: '数据图'
-            text: channelNames[0]
+            text: channelNames[0] // 使用第一个通道名称作为标题
         },
         tooltip: {
             trigger: 'axis',
-            formatter: function (params) {  
-                let formattedTooltip = '';  
-                params.forEach(param => {  
-                    const formattedValue = `${param.seriesName}: ${param.value} ${units[param.dataIndex]}`;  
-                    formattedTooltip += `${param.name}<br/>${formattedValue}<br/>`;  
-                });  
-                return formattedTooltip;  
-            }  
-        },
-        //工具箱组件
-        toolbox: {
-            feature: {
-                restore: {}, // 还原
-                saveAsImage: {}, // 保存为图片
-                dataView: {
-                    readOnly: false // 允许编辑数据
-                },
-                magicType: {
-                    type: ['line', 'bar'] // 切换图表类型
-                },
-                dataZoom: {} // 缩放
+            formatter: function (params) {
+                let formattedTooltip = '';
+                params.forEach(param => {
+                    const formattedValue = `${param.seriesName}: ${param.value} ${units[param.dataIndex]}`;
+                    formattedTooltip += `${param.name}<br/>${formattedValue}<br/>`;
+                });
+                return formattedTooltip;
             }
         },
-        
-        
+        toolbox: {
+            feature: {
+                restore: {},  // 还原
+                saveAsImage: {},  // 保存为图片
+                dataView: {
+                    readOnly: false  // 允许编辑数据
+                },
+                magicType: {
+                    type: ['line', 'scatter']  // 切换图表类型为折线和散点
+                },
+                dataZoom: {}  // 缩放
+            }
+        },
         xAxis: {
             name: "时间(s)",
             nameLocation: "center",
             type: 'category',
             nameGap: 30,
             splitLine: {
-                show: false,
-                rotate: 30,
+                show: false
             },
-            data: xAxisData,
+            data: xAxisData
         },
         yAxis: {
-            name: "幅值（"+units[0]+")",
+            name: `幅值（${units[0]}）`,
             nameLocation: 'center',
             type: 'value',
             nameGap: 30,
-            scale: true
+            scale: true,
+            min: yAxisMin,  // 动态计算的最小值
+            max: yAxisMax   // 动态计算的最大值
         },
-        series: [{
-            name: channelNames[0] || '通道', // 使用第一个通道名称作为系列名称
-            type: 'line',
-            data: seriesData,
-            smooth: true // 平滑曲线
-        }],
-        // 添加 dataZoom 组件
+        series: [
+            {
+                name: channelNames[0],  // 使用第一个通道名称作为系列名称
+                type: 'scatter', // 初始使用散点图
+                data: seriesData,
+                symbolSize: 5 
+            }
+        ],
         dataZoom: [
             {
-                type: 'slider', // 使用滑动条
-                xAxisIndex: [0], // 绑定到 x 轴
-                start: 0, // 起始百分比
-                end: 100, // 结束百分比
-                handleSize: 8, // 手柄大小
+                type: 'slider',
+                xAxisIndex: [0],
+                start: 0,
+                end: 100,
+                handleSize: 8,
                 textStyle: {
-                    color: '#fff' // 文字颜色
+                    color: '#fff'  // 文字颜色
                 },
-                borderColor: '#999' // 边框颜色
+                borderColor: '#999'  // 边框颜色
             },
             {
-                type: 'inside', // 内部缩放
-                xAxisIndex: [0], // 绑定到 x 轴
+                type: 'inside',
+                xAxisIndex: [0],
                 start: 0,
                 end: 100
             }
@@ -166,115 +174,124 @@ function generateChart(data) {
     };
 
     // 使用新数据更新图表
-    myChart.setOption(option, true); // 第二个参数为 true 表示不合并
+    myChart.setOption(option, true);  // 第二个参数为 true 表示不合并
 }
-
-// 监听窗口大小变化
-window.onresize = function () {
-    if (myChart) {
-        myChart.resize();
-    }
-};
-
-// document.getElementById('query-button').addEventListener('click', function () {
-//     const channelSelect = document.getElementById('channel-select');
-   
-
-//     const selectedChannel = channelSelect.value;
-
-//     let startTime = document.getElementById('startTime').value;
-//     let endTime = document.getElementById('endTime').value;
-//     console.log(startTime, endTime);
-
-//     if (!startTime || !endTime) {
-//         alert('开始时间和结束时间不能为空');
-//         return;
-//     }
-//     startTime = Math.floor(new Date(startTime).getTime() / 1000);
-//     endTime = Math.floor(new Date(endTime).getTime() / 1000);
-
-//     // 调用发起请求的函数
-//     sendRequest(selectedChannel, startTime, endTime);
-// });
-
-// function sendRequest(channelId, startTime, endTime) {
-//     const data = {
-//         id: channelId,
-//         startTime: startTime,
-//         endTime: endTime
-//     };
-
-//     // 发起 AJAX 请求
-//     $.ajax({
-//         type: "POST", // 根据需要选择请求类型
-//         url: "http://10.62.213.53:9000/weiyi/get", // 替换为实际的 API 地址
-//         contentType: "application/json;charset=utf-8",
-//         dataType: "json",
-//         data: JSON.stringify(data),
-//         success: function (response) {
-//             // 处理返回的数据
-//             console.log('查询结果:', response);
-//             // 在这里处理返回的数据
-//             generateChart(response.data)
-//         },
-//         error: function (res) {
-//             console.error('请求错误:', res);
-//         }
-//     });
-// }
-
-// let myChart; // 在外部声明 myChart
 
 // function generateChart(data) {
 //     const container = document.getElementById('chart-container');
-//     container.innerHTML = ''; // 清空容器
-
-//     // // 创建 ECharts 实例
-//     // const myChart = echarts.init(container);
-
-//      // 如果 myChart 尚未初始化，则初始化它
-//      if (!myChart) {
+//     console.log('更新图的数据是1')
+//     // 如果 myChart 尚未初始化，则初始化它
+//     if (!myChart) {
 //         myChart = echarts.init(container);
 //     }
-
+//     console.log('更新图的数据是2')
 //     // 准备数据
 //     const xAxisData = data.map(item => item.formattedStartTime);
+
+//     console.log('x轴的数据是',xAxisData)
 //     const seriesData = data.map(item => item.Value);
+//     console.log('y轴的数据是',seriesData)
 //     const channelNames = data.map(item => item.channel_name);
 //     const units = data.map(item => item.Unit);
+
+//      // 计算数据的最大值和最小值
+//      const maxDataValue = Math.max(...seriesData);
+//      const minDataValue = Math.min(...seriesData);
+ 
+//      // 计算 y 轴的范围，放大 20% 的范围
+//      const rangeBuffer = (maxDataValue - minDataValue) * 2;  // 20% 的 buffer
+//      const yAxisMin = parseFloat((minDataValue - rangeBuffer).toFixed(2));
+//      const yAxisMax = parseFloat((maxDataValue + rangeBuffer).toFixed(2));
+     
+
 
 //     // 配置图表选项
 //     const option = {
 //         title: {
-//             text: '数据图'
+//             text: channelNames[0] // 使用第一个通道名称作为标题
 //         },
 //         tooltip: {
 //             trigger: 'axis',
 //             formatter: function (params) {
-//                 const param = params[0];
-//                 return `${param.name}<br/>${param.seriesName}: ${param.value} ${units[param.dataIndex]}`;
+//                 let formattedTooltip = '';
+//                 params.forEach(param => {
+//                     const formattedValue = `${param.seriesName}: ${param.value} ${units[param.dataIndex]}`;
+//                     formattedTooltip += `${param.name}<br/>${formattedValue}<br/>`;
+//                 });
+//                 return formattedTooltip;
+//             }
+//         },
+//         toolbox: {
+//             feature: {
+//                 restore: {},  // 还原
+//                 saveAsImage: {},  // 保存为图片
+//                 dataView: {
+//                     readOnly: false  // 允许编辑数据
+//                 },
+//                 magicType: {
+//                     type: ['line', 'bar','scatter']  // 切换图表类型为折线、柱状
+//                 },
+//                 dataZoom: {}  // 缩放
 //             }
 //         },
 //         xAxis: {
+//             name: "时间(s)",
+//             nameLocation: "center",
 //             type: 'category',
-//             data: xAxisData,
-//             name: '时间'
+//             nameGap: 30,
+//             splitLine: {
+//                 show: false
+//             },
+//             data: xAxisData
 //         },
 //         yAxis: {
+//             name: `幅值（${units[0]}）`,
+//             nameLocation: 'center',
 //             type: 'value',
-//             name: '值'
+//             nameGap: 30,
+//             scale: true,
+//             min: yAxisMin,  // 动态计算的最小值
+//             max: yAxisMax   // 动态计算的最大值
 //         },
 //         series: [{
-//             name: channelNames[0] || '通道', // 使用第一个通道名称作为系列名称
-//             type: 'line', // 可以根据需要选择 'line', 'bar', 等等
-//             data: seriesData,
-//             smooth: true // 平滑曲线
-//         }]
+//             name: channelNames[0],  // 使用第一个通道名称作为系列名称
+//             type: 'scatter', // 使用散点图
+//             data: seriesData
+//         }],
+//         dataZoom: [
+//             {
+//                 type: 'slider',
+//                 xAxisIndex: [0],
+//                 start: 0,
+//                 end: 100,
+//                 handleSize: 8,
+//                 textStyle: {
+//                     color: '#fff'  // 文字颜色
+//                 },
+//                 borderColor: '#999'  // 边框颜色
+//             },
+//             {
+//                 type: 'inside',
+//                 xAxisIndex: [0],
+//                 start: 0,
+//                 end: 100
+//             }
+//         ]
 //     };
 
-//     // 使用刚指定的配置项和数据显示图表
-//     myChart.setOption(option);
+//     // 使用新数据更新图表
+//     myChart.setOption(option, true);  // 第二个参数为 true 表示不合并
 // }
+
+
+// // 监听窗口大小变化
+// window.onresize = function () {
+//     if (myChart) {
+//         myChart.resize();
+//     }
+// };
+
+
 
 
 

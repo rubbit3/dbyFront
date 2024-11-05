@@ -12,8 +12,10 @@ for (let i = 0; i < str.length; i++) {
     obj[a[0]] = a[1];
 }
 var token = $.cookie('token');
-// var building = obj.building;
-var building = 'd36a4445-6882-45d4-beca-baabd2120940';
+var building = obj.building;
+// var building = 'd36a4445-6882-45d4-beca-baabd2120940';
+// console.log('bulid is ',building)
+console.log('url is ',url)
 
 
 var type = obj.type;
@@ -220,6 +222,17 @@ function createChart(data, title, timeLabels, subText) {
             type: 'category',
             data: timeLabels,
             boundaryGap: false
+        },
+        toolbox: {
+            feature: {
+                restore: { show: true },  // 还原
+                saveAsImage: { show: true },  // 保存为图片
+                dataView: {
+                    show: true,
+                    readOnly: false  // 允许编辑数据
+                },
+                dataZoom: { show: true }  // 缩放
+            }
         },
         yAxis: {
             type: 'value',
