@@ -158,13 +158,26 @@ function ViewData() {
     });
 
     Promise.all(promises).then(results => {
-        let seriesData = results.map((result, index) => ({
-            name: result[0].name, // 假设每个结果数组的第一个元素包含name  
-            type: 'line',
-            showSymbol: false,
-            hoverAnimation: false,
-            data: result.map(item => [Number(item.time), Number(item.value)]) // 注意这里直接生成 [time, value] 数组  
-        }));
+
+        let seriesData = results.map((result, index) => {
+            const values = result.map(item => item.value);
+            const meanValue = values.reduce((acc, value) => acc + value, 0) / values.length;
+            return {
+                name: result[0].name, 
+                type: 'line',
+                showSymbol: false,
+                hoverAnimation: false,
+                data: result.map(item => [Number(item.time), Number(item.value) - meanValue]) 
+            };
+        });
+
+        // let seriesData = results.map((result, index) => ({
+        //     name: result[0].name, // 假设每个结果数组的第一个元素包含name  
+        //     type: 'line',
+        //     showSymbol: false,
+        //     hoverAnimation: false,
+        //     data: result.map(item => [Number(item.time), Number(item.value)]) // 注意这里直接生成 [time, value] 数组  
+        // }));
         var option = {
             tooltip: {//鼠标放在点上显示数据
                 trigger: 'axis',//显示该列下所有坐标轴所对应的数据
