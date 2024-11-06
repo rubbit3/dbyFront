@@ -159,6 +159,9 @@ wz[51] = ip + "/station/getdata"
 // 导出excel数据
 wz[52] =  "http://127.0.0.1:5000/download_data"
 
+// 查询峰值数据
+wz[53] =  "http://127.0.0.1:5000/fengzhi/get"
+
 // /**实时加速度数据(往前回溯10s) */
 // wz[0] = ip + "/sensorData/current-com";
 // /** 速度时程; 位移时程; 预定时段内位移最大; 预定时段内位移平均值 后面需要加/{begin}/{end} 时间格式milliseconds*/

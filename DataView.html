@@ -336,7 +336,14 @@
                                     </button>
                                 </div>
                                 <br>
-                                <button type="button" onclick="ViewData()" class="btn btn-primary">查看时程图</button>
+                                <div style="display: flex; align-items: center; gap: 1rem;margin-top: 1rem;">
+                                    <button type="button" onclick="ViewData()" class="btn btn-primary">查看时程图</button>                                   
+                                    <p>时程图不需填时间间隔</p>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 1rem;margin-top: 1rem;">
+                                    <input type="number" id="intervalInput" min="1" max="60" class="form-control" style="width:10rem" placeholder="选择1-60的整数">
+                                    <button type="button" onclick="ViewPeakData()" class="btn btn-primary">峰值值查看</button>
+                                </div>
                             </div>
                         </div>
                     </div>
