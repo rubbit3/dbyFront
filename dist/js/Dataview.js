@@ -128,6 +128,7 @@ function timeToTimestamp(time) {
 var start = '';
 var end = '';
 var echartsDataAll = [];
+// 查询数据
 function ViewData() {
     console.log(newbegin);
     console.log(newend);
@@ -143,8 +144,8 @@ function ViewData() {
     console.log(diffHours)
 
     // 检查时间差是否超过1小时  
-    if (diffHours > 2) {
-        alert("选择的时间段不能大于一小时，请重新选择！");
+    if (diffHours > 6) {
+        alert("选择的时间段不能大于6小时，请重新选择！");
         return; 
     }
 
