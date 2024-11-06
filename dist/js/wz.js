@@ -160,7 +160,7 @@ wz[51] = ip + "/station/getdata"
 wz[52] =  "http://127.0.0.1:5000/download_data"
 
 // 查询峰值数据
-wz[53] =  "http://127.0.0.1:5000/fengzhi/get"
+wz[53] =  ip + "/fengzhi/get"
 
 // /**实时加速度数据(往前回溯10s) */
 // wz[0] = ip + "/sensorData/current-com";
