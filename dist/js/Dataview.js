@@ -1739,7 +1739,8 @@ function fetchPeakDataForNode(nodes, newbegin, newend) {
                     echartsData.push({
                         name: nodes,
                         time: response.time_data_values[i] * 1000, // 转换为毫秒
-                        value: response.fengzhi_data_values[i]
+                        // value: response.fengzhi_data_values[i]
+                        value: Math.abs(response.fengzhi_data_values[i])
                     });
                 }
                 resolve(echartsData);
