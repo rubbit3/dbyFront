@@ -1720,27 +1720,31 @@ function fetchPeakDataForNode(nodes, newbegin, newend) {
         let encodedNodes = encodeURIComponent(nodes);
         let encodedNewbegin = encodeURIComponent(newbegin);
         let encodedNewend = encodeURIComponent(newend);
-        let urlcc = wz[53] + '?collection_name=' + encodedNodes + '&start_time=' + encodedNewbegin + '&end_time=' + encodedNewend;
-        console.log('urlcc is', urlcc);
 
-        //url是http://127.0.0.1:5000/fengzhi/getget?collection_name=973126%231-3&start_time=1728366281&end_time=1730871881
+
+        let urlcc = wz[53] + '?collection_name=' + encodedNodes + '&start_time=' + encodedNewbegin + '&end_time=' + encodedNewend;
+        console.log('encodedNodes is', encodedNodes);
+        console.log('encodedNewbegin is', encodedNewbegin);
+        console.log('encodedNewend is', encodedNewend);
+
         $.ajax({
-            // url: wz[53] + 'get?collection_name=' + nodes + '&start_time=' + newbegin + '&end_time=' + newend,
-            url: urlcc,
+            url: 'http://10.62.213.53:9000/fengzhi/get?collection_name=' + encodedNodes + '&start_time=' + encodedNewbegin + '&end_time=' + encodedNewend,
+            // url: urlcc,
 
             method: 'GET',
             dataType: 'json',
             contentType: 'application/json',
             success: function (response) {
-                console.log(response)
+                console.log('response.namevalue',response.namevalue)
                 let echartsData = [];
                 for (let i = 0; i < response.fengzhi_data_values.length; i += interval) {
-                    console.log(i)
+                    // console.log(i)
+                    absdata = Math.abs(response.fengzhi_data_values[i])
                     echartsData.push({
-                        name: nodes,
+                        name: response.namevalue,
                         time: response.time_data_values[i] * 1000, // 转换为毫秒
                         // value: response.fengzhi_data_values[i]
-                        value: Math.abs(response.fengzhi_data_values[i])
+                        value: absdata
                     });
                 }
                 resolve(echartsData);
