@@ -228,184 +228,29 @@ function ViewData() {
 }
 
 
+// 默认图表类型
+let chartType = 'scatter';
 
 // 查询峰值数据
 function ViewPeakData() {
     console.log(newbegin);
     console.log(newend);
 
-    //     /***begin */
-    // /***如果需要控制时差，就去掉注释 */
-
-    // // 计算时间差  
     var timeDiff = newend - newbegin;
-    console.log(timeDiff)
-
-    // 将时间差转换为小时  
     var diffHours = timeDiff / 3600;
 
-    console.log(diffHours)
-
-    // 检查时间差是否超过1小时  
     if (diffHours > 24) {
         alert("选择的时间段不能大于24小时，请重新选择！");
         return;
     }
 
-    //     /***end */
-
     showLoadingOverlay();
 
     var myChart = echarts.init(document.getElementById('dataview'));
 
-    // 模拟节点数据，这里要注释掉哈。url是http://127.0.0.1:5000/fengzhi/getget?collection_name=973126%231-3&start_time=1728366281&end_time=1730871881
-    // const nodes = [
-    //     { id: "973126%231-3", name: "节点1" },
-    //     { id: "973126%231-3", name: "节点2" },
-    //     { id: "973126%231-3", name: "节点3" }
-    // ];
-
     const promises = nodes.map(node => {
         return fetchPeakDataForNode(node.id, newbegin, newend);
     });
-
-    // Promise.all(promises).then(results => {
-    //     console.log('result is ', results)
-
-    //     // 提取最大值和最小值系列数据
-    //     let maxDataSeries = results[0].map(item => ({
-    //         time: item.time,
-    //         value: item.maxData
-    //     }));
-    //     let minDataSeries = results[0].map(item => ({
-    //         time: item.time,
-    //         value: item.mindata
-    //     }));
-    //     // 配置 ECharts 的 series 数据
-    //     let seriesData = [
-    //         {
-    //             name: '最大值',
-    //             type: 'scatter',
-    //             data: maxDataSeries.map(item => [Number(item.time), Number(item.value)]),
-    //             itemStyle: { color: 'red' },
-    //             symbolSize: 6
-    //         },
-    //         {
-    //             name: '最小值',
-    //             type: 'scatter',
-    //             data: minDataSeries.map(item => [Number(item.time), Number(item.value)]),
-    //             itemStyle: { color: 'blue' },
-    //             symbolSize: 6
-    //         }
-    //     ];
-
-    //     // 配置 ECharts 图表选项
-    //     var option = {
-    //         tooltip: {
-    //             trigger: 'axis',
-    //             axisPointer: { type: 'shadow' }
-    //         },
-    //         legend: {
-    //             data: ['最大值', '最小值'],
-    //             top: 10
-    //         },
-    //         dataZoom: [
-    //             { type: 'slider', show: true, start: 0, end: 100, bottom: 35 },
-    //             { type: "inside" }
-    //         ],
-    //         grid: {
-    //             left: 25, bottom: 35, right: 20, containLabel: true
-    //         },
-    //         xAxis: {
-    //             name: "时间(s)",
-    //             type: 'time',
-    //             nameLocation: "center",
-    //             nameGap: 30,
-    //             splitLine: { show: false }
-    //         },
-    //         yAxis: {
-    //             name: "幅值(cm/s^2)",
-    //             type: 'value',
-    //             nameLocation: 'center',
-    //             nameGap: 30,
-    //             scale: true
-    //         },
-    //         series: seriesData
-    //     };
-
-    //     // 使用配置项和数据显示图表  
-    //     myChart.setOption(option, true);
-
-
-
-    //     // let seriesData = results.map((result, index) => {
-    //     //     const values = result.map(item => item.value);
-    //     //     const meanValue = values.reduce((acc, value) => acc + value, 0) / values.length;
-    //     //     return {
-    //     //         name: result[0].name,
-    //     //         type: 'line',
-    //     //         showSymbol: false,
-    //     //         hoverAnimation: false,
-    //     //         data: result.map(item => [Number(item.time), Number(item.value) - meanValue])
-    //     //     };
-    //     // });
-
-    //     // var option = {
-    //     //     tooltip: {//鼠标放在点上显示数据
-    //     //         trigger: 'axis',//显示该列下所有坐标轴所对应的数据
-    //     //     },
-    //     //     legend: {
-    //     //         name: "sss"
-    //     //     },
-    //     //     dataZoom: [{
-    //     //         type: 'slider',
-    //     //         show: true,
-    //     //         start: 50,
-    //     //         end: 100,
-    //     //         bottom: 35,
-    //     //     }, {
-    //     //         type: "inside",
-    //     //     }],
-    //     //     grid: {
-    //     //         show: true,
-    //     //         borderWidth: 0,
-    //     //         left: 25,
-    //     //         bottom: 35,
-    //     //         right: 20,
-    //     //         containLabel: true
-    //     //     },
-    //     //     xAxis: {
-    //     //         name: "时间(s)",
-    //     //         nameLocation: "center",
-    //     //         type: 'time',
-    //     //         nameGap: 30,
-    //     //         splitLine: {
-    //     //             show: false,
-    //     //             rotate: 30,
-    //     //         },
-    //     //     },
-    //     //     yAxis: {
-    //     //         name: "幅值(cm/s^2)",
-    //     //         nameLocation: 'center',
-    //     //         type: 'value',
-    //     //         nameGap: 30,
-    //     //         scale: true
-    //     //     },
-    //     //     series: seriesData
-    //     // };
-    //     // // 使用配置项和数据显示图表  
-    //     // myChart.setOption(option, true); // 注意：setOption 的第二个参数通常不是必需的，除非您有特定需求  
-
-    //     // 监听窗口大小变化，自适应图表大小  
-    //     window.addEventListener("resize", function () {
-    //         myChart.resize();
-    //     });
-    //     hideLoadingOverlay();
-    // }).catch(error => {
-    //     console.error("加载数据失败:", error);
-    //     hideLoadingOverlay();
-    // });
-
 
     Promise.all(promises).then(results => {
         // 用于存储所有系列数据的数组
@@ -413,7 +258,6 @@ function ViewPeakData() {
 
         // 遍历每个结果集，将最大值和最小值添加到 seriesData 中
         results.forEach((dataSet, index) => {
-            // 提取每个数据集的最大值和最小值系列
             let maxDataSeries = dataSet.map(item => ({
                 time: item.time,
                 value: item.maxData
@@ -423,35 +267,56 @@ function ViewPeakData() {
                 value: item.mindata
             }));
 
-            // 使用数据集的 `name` 字段值替换
-            const dataSetName = dataSet[0].name;  // 假设 `name` 是在 `dataSet` 的第一个元素中
+            const dataSetName = dataSet[0].name;
 
-            // 添加最大值散点系列
+            // 添加最大值和最小值系列
             seriesData.push({
                 name: `${dataSetName} - 最大值`,
-                type: 'scatter',
+                type: chartType,
                 data: maxDataSeries.map(item => [Number(item.time), Number(item.value)]),
-                itemStyle: { color: `hsl(${index * 60}, 100%, 50%)` }, // 不同数据集用不同颜色
+                itemStyle: { color: `hsl(${index * 60}, 100%, 50%)` },
                 symbolSize: 6
             });
-
-            // 添加最小值散点系列
             seriesData.push({
                 name: `${dataSetName} - 最小值`,
-                type: 'scatter',
+                type: chartType,
                 data: minDataSeries.map(item => [Number(item.time), Number(item.value)]),
-                itemStyle: { color: `hsl(${index * 60 + 30}, 100%, 50%)` }, // 不同数据集用不同颜色
+                itemStyle: { color: `hsl(${index * 60 + 30}, 100%, 50%)` },
                 symbolSize: 6
             });
-
-
         });
+
+        // 函数用于更新图表类型
+        function updateChart() {
+            myChart.setOption({
+                series: seriesData.map(series => ({
+                    ...series,
+                    type: chartType  // 更新为当前图表类型
+                }))
+            });
+        }
 
         // 配置 ECharts 图表选项
         var option = {
             tooltip: {
                 trigger: 'axis',
                 axisPointer: { type: 'shadow' }
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {},  // 导出图片
+                    dataView: {},     // 数据视图
+                    restore: {},      // 重置
+                    myToggle: {
+                        show: true,
+                        title: '切换图表类型',
+                        icon: 'path://M512 0C229.3 0 0 229.3 0 512s229.3 512 512 512 512-229.3 512-512S794.7 0 512 0zm0 920.6c-224.8 0-408.6-183.8-408.6-408.6S287.2 103.4 512 103.4 920.6 287.2 920.6 512 736.8 920.6 512 920.6zm0-648.8c-23.5 0-42.5 19-42.5 42.5v252.3l-129.1-129.1c-16.6-16.6-43.4-16.6-60 0s-16.6 43.4 0 60l204.2 204.2c8.3 8.3 19.2 12.5 30 12.5s21.7-4.2 30-12.5l204.2-204.2c16.6-16.6 16.6-43.4 0-60s-43.4-16.6-60 0L554.5 566.6V314.3c0-23.5-19-42.5-42.5-42.5z',
+                        onclick: function () {
+                            chartType = chartType === 'scatter' ? 'line' : 'scatter';
+                            updateChart();
+                        }
+                    }
+                }
             },
             legend: {
                 data: seriesData.map(series => series.name),
@@ -481,10 +346,8 @@ function ViewPeakData() {
             series: seriesData
         };
 
-        // 使用配置项和数据显示图表  
         myChart.setOption(option, true);
 
-        // 监听窗口大小变化，自适应图表大小  
         window.addEventListener("resize", function () {
             myChart.resize();
         });
@@ -494,8 +357,8 @@ function ViewPeakData() {
         console.error("加载数据失败:", error);
         hideLoadingOverlay();
     });
-
 }
+
 
 
 function showLoadingOverlay() {

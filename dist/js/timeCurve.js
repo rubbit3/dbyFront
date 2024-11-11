@@ -80,7 +80,7 @@ function initTree() {
         url: wz[14] + "?ID_project=" + projectID,
         success: function (msg) {
             zNodes = msg.data.map(item => ({
-                name: item.channel_name,                
+                name: item.channel_name,
                 id: item.id,
                 idname: item.id,
                 pId: 0,
@@ -106,7 +106,7 @@ function getChannelList() {
             $('#chart-container').empty();
             myCharts = [];
             for (var i = 0; i < Math.min(msg.data.length, 6); i++) {
-                createChart(i, msg.data[i],msg.data[i].channel_name);
+                createChart(i, msg.data[i], msg.data[i].channel_name);
             }
         },
         error: function (res) {
@@ -116,7 +116,7 @@ function getChannelList() {
 }
 
 // 创建单个图表
-function createChart(index, channel,channel_name) {
+function createChart(index, channel, channel_name) {
     let timedata = []; // 初始化为空数组
     let y_data = [];   // 初始化为空数组
 
@@ -135,9 +135,19 @@ function createChart(index, channel,channel_name) {
 
         // 在此处调用getChannelData，并在获取数据后更新图表
         getChannelData(projectID, channel.id, formattedTimestamp, function (dataXzhou, dataYzhou, unit) {
-            for (let i = 0; i < dataXzhou.length; i++) {
+            // 计算dataYzhou数组的均值
+            let sum = 0;
+            for (let i = 0; i < dataYzhou.length; i++) {
+                sum += dataYzhou[i];
+            }
+            let mean = sum / dataYzhou.length;  // 计算均值
+
+            // 创建一个新的y_data数组，将每个元素减去均值
+            let adjustedYData = dataYzhou.map(value => value - mean);
+
+            for (let i = 0; i < adjustedYData.length; i++) {
                 timedata.push(dataXzhou[i]);
-                y_data.push(dataYzhou[i]);
+                y_data.push(adjustedYData[i]);
 
                 // 如果数据点已经达到5000个，则移除最早的数据点  
                 if (timedata.length > 5000) {
@@ -146,16 +156,26 @@ function createChart(index, channel,channel_name) {
                 }
             }
 
-            var option = createChartOption(channel.id, timedata, y_data, unit,channel_name);
+            var option = createChartOption(channel.id, timedata, y_data, unit, channel_name);
             myChart.setOption(option);
 
             // 设置定时器更新数据
             var intervalId = setInterval(function () {
                 var currentTime = Math.floor(new Date().getTime() / 1000);
                 getChannelData(projectID, channel.id, currentTime, function (dataXzhou, dataYzhou, unit) {
+                    // 计算dataYzhou数组的均值
+                    let sum = 0;
+                    for (let i = 0; i < dataYzhou.length; i++) {
+                        sum += dataYzhou[i];
+                    }
+                    let mean = sum / dataYzhou.length;  // 计算均值
+
+                    // 创建一个新的y_data数组，将每个元素减去均值
+                    let adjustedYData = dataYzhou.map(value => value - mean);
+
                     for (let i = 0; i < dataXzhou.length; i++) {
                         timedata.push(dataXzhou[i]);
-                        y_data.push(dataYzhou[i]);
+                        y_data.push(adjustedYData[i]);
 
                         // 如果数据点已经达到5000个，则移除最早的数据点  
                         if (timedata.length > 5000) {
@@ -177,18 +197,18 @@ function createChart(index, channel,channel_name) {
 
 
 // 生成图表的配置选项
-function createChartOption(channelId, dataXzhou, dataYzhou, unit,channel_name) {
+function createChartOption(channelId, dataXzhou, dataYzhou, unit, channel_name) {
     let color = channelColors[channelId] || (channelColors[channelId] = getRandomColor());
     console.log(channelColors)
     console.log(channel_name)
     //生成随机颜色
     function getRandomColor() {
-        var letters = '0123456789ABCDEF';  
-        var color = '#';  
-        for (var i = 0; i < 6; i++) {  
-            color += letters[Math.floor(Math.random() * 16)];  
-        }  
-        return color;  
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
     }
 
     return {
@@ -199,11 +219,11 @@ function createChartOption(channelId, dataXzhou, dataYzhou, unit,channel_name) {
         },
         tooltip: {
             trigger: 'axis',
-            formatter: function (params) {  
-                return params[0].name + '<br/>' +  
-                       channel_name + ' (' + unit + '): ' +  
-                       params[0].value;  
-            }  
+            formatter: function (params) {
+                return params[0].name + '<br/>' +
+                    channel_name + ' (' + unit + '): ' +
+                    params[0].value;
+            }
         },
 
         //工具箱组件
@@ -265,7 +285,7 @@ function createChartOption(channelId, dataXzhou, dataYzhou, unit,channel_name) {
             data: dataXzhou,
         }],
         yAxis: [{
-            name: '幅值('+unit+')',
+            name: '幅值(' + unit + ')',
             nameLocation: 'center',
             nameTextStyle: {
                 color: "#000000",
@@ -298,7 +318,7 @@ function createChartOption(channelId, dataXzhou, dataYzhou, unit,channel_name) {
                 normal: {
                     lineStyle: {
                         width: 0.8,
-                        color: color, 
+                        color: color,
                     },
                 },
             },
@@ -375,7 +395,7 @@ function confirmstation() {
     $('#chart-container').empty();
     myCharts = []; // 清空之前的echarts实例数组
     for (var i = 0; i < nodes.length; i++) {
-        createChart(i, nodes[i],nodes[i].name,nodes[i].Unit);
+        createChart(i, nodes[i], nodes[i].name, nodes[i].Unit);
     }
 }
 

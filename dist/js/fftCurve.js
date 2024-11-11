@@ -159,9 +159,17 @@ function createChart(index, channel, channel_name) {
             //     //     y_data.shift();
             //     // }
             // }
+            // 计算dataYzhou数组的均值
+            let sum = 0;
+            for (let i = 0; i < dataYzhou.length; i++) {
+                sum += dataYzhou[i];
+            }
+            let mean = sum / dataYzhou.length;  // 计算均值
 
+            // 创建一个新的y_data数组，将每个元素减去均值
+            let adjustedYData = dataYzhou.map(value => value - mean);
 
-            var option = createChartOption(channel.id,dataXzhou, dataYzhou, unit, channel_name);
+            var option = createChartOption(channel.id, dataXzhou, adjustedYData, unit, channel_name);
             // console.log(timedata)
             // console.log(y_data)
             myChart.setOption(option);
@@ -170,7 +178,15 @@ function createChart(index, channel, channel_name) {
             var intervalId = setInterval(function () {
                 var currentTime = Math.floor(new Date().getTime() / 1000);
                 getChannelData(projectID, channel.id, currentTime, function (dataXzhou, dataYzhou, unit) {
-                    var option = createChartOption(channel.id,dataXzhou, dataYzhou, unit, channel_name);
+                    let sum = 0;
+                    for (let i = 0; i < dataYzhou.length; i++) {
+                        sum += dataYzhou[i];
+                    }
+                    let mean = sum / dataYzhou.length;  // 计算均值
+        
+                    // 创建一个新的y_data数组，将每个元素减去均值
+                    let adjustedYData = dataYzhou.map(value => value - mean);
+                    var option = createChartOption(channel.id, dataXzhou, adjustedYData, unit, channel_name);
                     myChart.setOption(option);
                     window.addEventListener("resize", function () {
                         myChart.resize();
@@ -207,7 +223,7 @@ function FFT_createChart(index, channel, channel_name) {
         myCharts[index] = myChart;
 
         // 在此处调用getChannelData，并在获取数据后更新图表
-        getFFTChannelData(projectID, channel.id, formattedTimestamp, function (dataXzhou,fftData, unit) {
+        getFFTChannelData(projectID, channel.id, formattedTimestamp, function (dataXzhou, fftData, unit) {
             // console.log(dataXzhou)
             // console.log(fftData)
             // for (let i = 0; i < dataXzhou.length; i++) {
@@ -371,7 +387,7 @@ function FFT_createChart(index, channel, channel_name) {
 
 function createChartOption(channelId, dataXzhou, dataYzhou, unit, channel_name) {
     let color = channelColors[channelId] || (channelColors[channelId] = getRandomColor());
-    
+
     function getRandomColor() {
         var letters = '0123456789ABCDEF';
         var color = '#';
@@ -393,8 +409,8 @@ function createChartOption(channelId, dataXzhou, dataYzhou, unit, channel_name) 
                     params[0].value;
             }
         },
-          //工具箱组件
-          toolbox: {
+        //工具箱组件
+        toolbox: {
             feature: {
                 // restore: {}, // 还原
                 saveAsImage: {}, // 保存为图片
@@ -410,7 +426,7 @@ function createChartOption(channelId, dataXzhou, dataYzhou, unit, channel_name) 
         dataZoom: [{
             type: 'slider',
             show: true,
-            start: 50,
+            start: 0,
             end: 100,
             bottom: 35,
         }, {
@@ -490,7 +506,7 @@ function createChartOption(channelId, dataXzhou, dataYzhou, unit, channel_name) 
             },
             data: dataYzhou,
         }],
-        animation: false,  
+        animation: false,
     };
 }
 
@@ -521,7 +537,7 @@ function createFFTChartOption(channelId, dataXzhou, dataYzhou, unit, channel_nam
         tooltip: {
             trigger: 'axis',
             formatter: function (params) {
-                return params[0].name  + 'Hz<br/>' +
+                return params[0].name + 'Hz<br/>' +
                     channel_name + ' (幅值): ' +
                     params[0].value;
             }
@@ -762,7 +778,7 @@ function getFFTChannelData(ID_project, id, checkTime, callback) {
             }
 
             if (typeof callback === 'function') {
-                callback(dataXzhou,fftData, "");
+                callback(dataXzhou, fftData, "");
             }
         },
         error: function (res) {
