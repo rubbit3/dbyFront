@@ -193,96 +193,24 @@ function generateTimeLabels(startTime, endTime, length) {
     return labels;
 }
 
-// function createChart(data, title, timeLabels, subText) {
-//     const chartContainer = document.createElement('div');
-//     chartContainer.classList.add('chart-container');
-//     document.getElementById('chartsContainer').appendChild(chartContainer);
-
-   
-
-
-//     const min = Math.min(...data) - 0.05;
-//     const max = Math.max(...data) + 0.05;
-
-//     const chart = echarts.init(chartContainer);
-//     const option = {
-//         title: {
-//             text: title,
-//             left: 'center',
-//             subtext: subText,
-//             subtextStyle: {
-//                 color: '#555',
-//                 fontSize: 12
-//             }
-//         },
-//         tooltip: {
-//             trigger: 'axis'
-//         },
-//         xAxis: {
-//             type: 'category',
-//             data: timeLabels,
-//             boundaryGap: false
-//         },
-//         toolbox: {
-//             feature: {
-//                 restore: { show: true },  // 还原
-//                 saveAsImage: { show: true },  // 保存为图片
-//                 dataView: {
-//                     show: true,
-//                     readOnly: false  // 允许编辑数据
-//                 },
-//                 dataZoom: { show: true }  // 缩放
-//             }
-//         },
-//         yAxis: {
-//             type: 'value',
-//             min: min,
-//             max: max,
-//             axisLabel: {  
-//                 formatter: function (value, index) {  
-//                     return value.toFixed(2);  
-//                 },  
-//             }, 
-//         },
-//         series: [{
-//             data: data,
-//             type: 'line',
-//             smooth: true,
-//             lineStyle: {
-//                 width: 2
-//             },
-//             itemStyle: {
-//                 color: 'rgba(75, 192, 192, 1)'
-//             }
-//         }],
-//         dataZoom: [
-//             {
-//                 type: 'slider',
-//                 show: true,
-//                 xAxisIndex: [0],
-//                 start: 0,
-//                 end: 100
-//             },
-//             {
-//                 type: 'inside',
-//                 xAxisIndex: [0],
-//                 start: 0,
-//                 end: 100
-//             }
-//         ]
-//     };
-//     chart.setOption(option);
-// }
-
-
 function createChart(data, title, timeLabels, subText) {
     const chartContainer = document.createElement('div');
     chartContainer.classList.add('chart-container');
     document.getElementById('chartsContainer').appendChild(chartContainer);
 
-    const chart = echarts.init(chartContainer);
-    let currentChartType ='scatter'; // 初始为散点图
+   
 
+    // y轴放大3.3倍
+    const min = Math.min(...data) - 3.3;
+    const max = Math.max(...data) + 3.3;
+
+    console.log('min',min)
+    console.log('max',max)
+
+
+    console.log('a min',Math.min(...data))
+    console.log('a max',Math.max(...data))
+    const chart = echarts.init(chartContainer);
     const option = {
         title: {
             text: title,
@@ -309,20 +237,26 @@ function createChart(data, title, timeLabels, subText) {
                     show: true,
                     readOnly: false  // 允许编辑数据
                 },
-                dataZoom: { show: true },  // 缩放
-                magicType: {
-                    show: true,
-                    type: ['line','scatter'] // 支持折线图和散点图切换
-                }
+                dataZoom: { show: true }  // 缩放
             }
         },
         yAxis: {
-            type: 'value'
+            type: 'value',
+            min: min,
+            max: max,
+            axisLabel: {  
+                formatter: function (value, index) {  
+                    return value.toFixed(2);  
+                },  
+            }, 
         },
         series: [{
             data: data,
-            type: currentChartType,
-            symbolSize: 8, // 散点大小
+            type: 'scatter',
+            smooth: true,
+            lineStyle: {
+                width: 2
+            },
             itemStyle: {
                 color: 'rgba(75, 192, 192, 1)'
             }
@@ -344,11 +278,85 @@ function createChart(data, title, timeLabels, subText) {
         ]
     };
     chart.setOption(option);
-
-    // 监听工具盒中的切换事件，更新图表类型
-    chart.on('toolbox.magicTypeChanged', function (params) {
-        currentChartType = params.currentType;
-        option.series[0].type = currentChartType;
-        chart.setOption(option);
-    });
 }
+
+
+// function createChart(data, title, timeLabels, subText) {
+//     const chartContainer = document.createElement('div');
+//     chartContainer.classList.add('chart-container');
+//     document.getElementById('chartsContainer').appendChild(chartContainer);
+
+//     const chart = echarts.init(chartContainer);
+//     let currentChartType ='scatter'; // 初始为散点图
+
+//     console.log('data is',data)
+
+//     const option = {
+//         title: {
+//             text: title,
+//             left: 'center',
+//             subtext: subText,
+//             subtextStyle: {
+//                 color: '#555',
+//                 fontSize: 12
+//             }
+//         },
+//         tooltip: {
+//             trigger: 'axis'
+//         },
+//         xAxis: {
+//             type: 'category',
+//             data: timeLabels,
+//             boundaryGap: false
+//         },
+//         toolbox: {
+//             feature: {
+//                 restore: { show: true },  // 还原
+//                 saveAsImage: { show: true },  // 保存为图片
+//                 dataView: {
+//                     show: true,
+//                     readOnly: false  // 允许编辑数据
+//                 },
+//                 dataZoom: { show: true },  // 缩放
+//                 magicType: {
+//                     show: true,
+//                     type: ['line','scatter'] // 支持折线图和散点图切换
+//                 }
+//             }
+//         },
+//         yAxis: {
+//             type: 'value'
+//         },
+//         series: [{
+//             data: data,
+//             type: currentChartType,
+//             symbolSize: 6, // 散点大小
+//             itemStyle: {
+//                 color: 'rgba(75, 192, 192, 1)'
+//             }
+//         }],
+//         dataZoom: [
+//             {
+//                 type: 'slider',
+//                 show: true,
+//                 xAxisIndex: [0],
+//                 start: 0,
+//                 end: 100
+//             },
+//             {
+//                 type: 'inside',
+//                 xAxisIndex: [0],
+//                 start: 0,
+//                 end: 100
+//             }
+//         ]
+//     };
+//     chart.setOption(option);
+
+//     // 监听工具盒中的切换事件，更新图表类型
+//     chart.on('toolbox.magicTypeChanged', function (params) {
+//         currentChartType = params.currentType;
+//         option.series[0].type = currentChartType;
+//         chart.setOption(option);
+//     });
+// }

@@ -181,6 +181,9 @@ function generateChart(data) {
         // 使用新数据更新图表
         myChart.setOption(option, true);  // 第二个参数为 true 表示不合并
     } else {
+
+        // 测试
+        console.log('y轴数据是',seriesData)
         // 计算均值
         const meanValue = seriesData.reduce((acc, current) => acc + current, 0) / seriesData.length;
 
@@ -194,7 +197,7 @@ function generateChart(data) {
         const minDataValue = Math.min(...newArray);
 
         // 计算 y 轴的范围，放大 20% 的范围
-        const rangeBuffer = (maxDataValue - minDataValue) * 3;  // 20% 的 buffer
+        const rangeBuffer = (maxDataValue - minDataValue) * 0.1;  // 20% 的 buffer
         const yAxisMin = parseFloat((minDataValue - rangeBuffer).toFixed(2));
         const yAxisMax = parseFloat((maxDataValue + rangeBuffer).toFixed(2));
 
@@ -249,7 +252,8 @@ function generateChart(data) {
             series: [{
                 name: channelNames[0],  // 使用第一个通道名称作为系列名称
                 type: 'scatter', // 使用散点图
-                data: newArray
+                data: newArray,
+                symbolSize: 10,
             }],
             dataZoom: [
                 {

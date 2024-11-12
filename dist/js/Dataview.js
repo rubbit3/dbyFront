@@ -236,13 +236,13 @@ function ViewPeakData() {
     console.log(newbegin);
     console.log(newend);
 
-    var timeDiff = newend - newbegin;
-    var diffHours = timeDiff / 3600;
+    // var timeDiff = newend - newbegin;
+    // var diffHours = timeDiff / 3600;
 
-    if (diffHours > 24) {
-        alert("选择的时间段不能大于24小时，请重新选择！");
-        return;
-    }
+    // if (diffHours > 24*7) {
+    //     alert("选择的时间段不能大于24小时，请重新选择！");
+    //     return;
+    // }
 
     showLoadingOverlay();
 

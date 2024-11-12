@@ -200,6 +200,12 @@
                         </a>
                     </li>
                     <li class="nav-item pointer">
+                        <a onclick="jumpto3D()" class="nav-link">
+                            <i class="fa fa-tv" style="color: white"></i>
+                            <span class="link-title">三维模型</span>
+                        </a>
+                    </li>
+                    <li class="nav-item pointer">
                         <a class="nav-link" role="button">
                             <i class="fa fa-folder" style="color: white"></i>
                             <span class="link-title">有限元分析</span>
@@ -218,12 +224,12 @@
                             </ul>
                         </div>
                     </li>
-                    <li class="nav-item pointer">
+                    <!-- <li class="nav-item pointer">
                         <a onclick="jumpto3D()" class="nav-link">
                             <i class="fa fa-tv" style="color: white"></i>
                             <span class="link-title">三维模型</span>
                         </a>
-                    </li>
+                    </li> -->
                     <li class="nav-item pointer">
                         <a class="nav-link" role="button">
                             <i class="fa fa-folder" style="color: white"></i>
@@ -232,13 +238,12 @@
                         <div class="collapse show" id="FileManage">
                             <ul class="nav sub-menu">
                                 <li class="nav-item">
-                                    <a onclick="jumptoDay()" class="nav-link">每日报告</a>
-                                </li>
-                                <li class="nav-item">
                                     <a onclick="jumptoMonth()" class="nav-link">每月报告</a>
                                 </li>
                                 <li class="nav-item">
                                     <a onclick="jumptoYear()" class="nav-link">年度报告</a>
+                                </li><li class="nav-item">
+                                    <a onclick="jumptoDay()" class="nav-link">事件报告</a>
                                 </li>
                             </ul>
                         </div>
@@ -343,7 +348,7 @@
                                 <div style="display: flex; align-items: center; gap: 1rem;margin-top: 1rem;">
                                     <span>输入时间间隔（分钟为单位）</span>
                                     <input type="number" id="intervalInput" min="1" max="60" class="form-control" style="width:10rem" placeholder="选择1-60的整数">
-                                    <button type="button" onclick="ViewPeakData()" class="btn btn-primary">查看峰峰值</button>
+                                    <button type="button" onclick="ViewPeakData()" class="btn btn-primary">查看峰值</button>
                                 </div>
                             </div>
                         </div>
