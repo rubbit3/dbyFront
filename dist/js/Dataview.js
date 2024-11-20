@@ -529,14 +529,25 @@ function fetchPeakDataForNode(nodes, newbegin, newend) {
                 console.log('response.fengzhi_max_values', response.fengzhi_maxdata_values)
                 console.log('response.fengzhi_min_values', response.fengzhi_mindata_values)
 
-                for (let i = 0; i < response.fengzhi_data_values.length; i += interval) {
+                // 计算均值
+                const calculateMean = (arr) => arr.reduce((sum, val) => sum + val, 0) / arr.length;
+                const maxDataMean = calculateMean(response.fengzhi_maxdata_values);
+                const minDataMean = calculateMean(response.fengzhi_mindata_values);
+
+                // 生成调整后的数组
+                maxDataAdjusted = response.fengzhi_maxdata_values.map(val => val - maxDataMean);
+                minDataAdjusted = response.fengzhi_mindata_values.map(val => val - minDataMean);
+
+                for (let i = 0; i < response.fengzhi_mindata_values.length; i += interval) {
                     // console.log(i)
                     // absdata = Math.abs(response.fengzhi_data_values[i])
                     echartsData.push({
                         name: response.namevalue,
                         time: response.time_data_values[i] * 1000, // 转换为毫秒
-                        maxData: response.fengzhi_maxdata_values[i], // 最大值数据
-                        mindata: response.fengzhi_mindata_values[i] // 最小值数据
+                        // maxData: response.fengzhi_maxdata_values[i], // 最大值数据
+                        // mindata: response.fengzhi_mindata_values[i] // 最小值数据
+                        maxData: maxDataAdjusted[i],
+                        mindata: minDataAdjusted[i]
                         // value: response.fengzhi_data_values[i]
                         // value: absdata
 
